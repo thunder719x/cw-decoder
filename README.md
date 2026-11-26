@@ -6,6 +6,7 @@
 > 界面支持中文 / English · Windows 桌面程序 · 不联网、不上传任何数据
 >
 > **项目地址：<https://github.com/thunder719x/cw-decoder>**
+> **下载最新版：<https://github.com/thunder719x/cw-decoder/releases/latest>**
 
 ![文件模式](docs/images/file-mode.png)
 
@@ -38,8 +39,10 @@
 
 ### 方式 A：下载打包版（推荐给普通用户）
 
+> 直接下载最新版：<https://github.com/thunder719x/cw-decoder/releases/latest>
+
 ```
-1. 打开 Releases 页面，下载最新的 cw-decoder-vX.Y.Z-win64.zip
+1. 打开上面的链接，下载 cw-decoder-vX.Y.Z-win64.zip
 2. 解压到任意可写目录（例如 D:\CWDecoder，不要放 Program Files）
 3. 双击 cw-decoder.exe
 ```
