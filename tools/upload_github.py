@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import base64
 import getpass
+import hashlib
 import json
 import os
 import sys
@@ -161,6 +162,23 @@ def collect(root: str) -> list[tuple[str, str]]:
     return out
 
 
+def blob_sha(data: bytes) -> str:
+    """Git blob 的 sha1（和 GitHub 用的算法一致）。"""
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+
+
+def remote_tree(token: str, owner: str, repo: str, tree_sha: str) -> dict[str, str]:
+    """取远端所有文件的 path -> blob sha。"""
+    st, data = api("GET", f"/repos/{owner}/{repo}/git/trees/{tree_sha}?recursive=1", token)
+    if st != 200:
+        return {}
+    out = {}
+    for item in data.get("tree", []):
+        if item.get("type") == "blob":
+            out[item["path"]] = item["sha"]
+    return out
+
+
 def human(n: int) -> str:
     return f"{n/1024/1024:.1f} MB" if n >= 1024 * 1024 else f"{n/1024:.0f} KB"
 
@@ -232,18 +250,44 @@ def main() -> int:
         st2, commit0 = api("GET", f"/repos/{args.owner}/{args.repo}/git/commits/{parent}", token)
         base_tree = commit0.get("tree", {}).get("sha") if st2 == 200 else None
 
-    # 3) 逐个上传 blob
+    # 3) 与远端比较，只上传新增/修改的文件
+    old = remote_tree(token, args.owner, args.repo, base_tree) if base_tree else {}
+    local = {}
+    added, changed, same = [], [], []
     tree_items = []
+    skipped = 0
     for i, (rel, path) in enumerate(files, 1):
         raw = open(path, "rb").read()
+        local[rel] = blob_sha(raw)
+        if rel in old and old[rel] == local[rel]:
+            same.append(rel)
+            continue                          # 内容没变：沿用远端 shas
         st, blob = api("POST", f"/repos/{args.owner}/{args.repo}/git/blobs", token,
                        {"content": base64.b64encode(raw).decode("ascii"), "encoding": "base64"})
         if st not in (200, 201):
             print(f"上传失败：{rel} → HTTP {st} {blob.get('message','')}")
             return 1
         tree_items.append({"path": rel, "mode": "100644", "type": "blob", "sha": blob["sha"]})
-        if i % 10 == 0 or i == len(files):
-            print(f"   已上传 {i}/{len(files)}")
+        (added if rel not in old else changed).append(rel)
+        skipped += 1
+        if skipped % 10 == 0:
+            print(f"   已上传 {skipped} 个")
+
+    # 远端有、本地没有 → 删除
+    removed = [p for p in old if p not in local]
+    for p in removed:
+        tree_items.append({"path": p, "mode": "100644", "type": "blob", "sha": None})
+
+    print(f"新增 {len(added)} | 修改 {len(changed)} | 删除 {len(removed)} | 未变 {len(same)}")
+    for p in (added[:6] + changed[:6]):
+        print(f"   + {p}")
+    if removed:
+        for p in removed[:6]:
+            print(f"   - {p}")
+
+    if not tree_items:
+        print("已是最新，无需提交 ✅")
+        return 0
 
     # 3) 建 tree
     payload = {"tree": tree_items}
