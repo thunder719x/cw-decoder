@@ -19,7 +19,10 @@ TITLES = ("CW 解码器", "CW Decoder")
 
 def _log_path() -> str:
     """Where to write crash.log (must be writable even in Program Files)."""
-    base = os.path.dirname(os.path.abspath(__file__))
+    if getattr(sys, "frozen", False):        # 打包后：用 exe 所在目录，而不是临时解包目录
+        base = os.path.dirname(os.path.abspath(sys.executable))
+    else:
+        base = os.path.dirname(os.path.abspath(__file__))
     for cand in (base, os.path.join(os.environ.get("LOCALAPPDATA") or os.path.expanduser("~"),
                                     "CWDecoder")):
         try:
@@ -66,8 +69,44 @@ def _existing_window():
     return found[0] if found else None
 
 
+def _selftest() -> int:
+    """--selftest：不开界面，解一个样例并写出结果（用于验证打包产物）。"""
+    import time
+    out = os.path.join(os.path.dirname(_log_path()), "self-test.txt")
+    lines = []
+    try:
+        from cwdec import pipeline
+        base = os.path.join(os.path.dirname(os.path.abspath(__file__)), "samples")
+        samples = ["sample_cq.wav", "sample_noisy.wav"]
+        for name in samples:
+            path = os.path.join(base, name)
+            if not os.path.exists(path):
+                lines.append(f"{name}: MISSING")
+                continue
+            for backend in ("dsp", "ctc"):
+                t0 = time.time()
+                try:
+                    res = pipeline.decode_file(path, backend=backend)
+                    lines.append(f"{name} / {backend}: {res.get('text','')!r} "
+                                 f"[{time.time()-t0:.2f}s]")
+                except Exception as e:
+                    lines.append(f"{name} / {backend}: ERROR {type(e).__name__}: {e}")
+    except Exception as e:
+        lines.append(f"IMPORT ERROR {type(e).__name__}: {e}")
+    lines.append(f"python={sys.version.split()[0]} frozen={getattr(sys,'frozen',False)}")
+    try:
+        with open(out, "w", encoding="utf-8") as f:
+            f.write("\n".join(lines) + "\n")
+    except Exception:
+        pass
+    return 0
+
+
 def main():
     _install_crash_log()
+
+    if "--selftest" in sys.argv:
+        return _selftest()
 
     hwnd = _existing_window()
     if hwnd:

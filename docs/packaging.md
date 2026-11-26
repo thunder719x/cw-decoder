@@ -20,7 +20,7 @@
 | | onefile | onedir |
 |---|---|---|
 | 产物 | 单个 exe | 文件夹（exe + DLL） |
-| 启动 | 每次解压到临时目录，**1–3 秒** | 直接加载，**0.3–0.8 秒** |
+| 启动 | 每次解压到临时目录，**2–5 秒** | 直接加载，**实测 1.5 秒**（首次约 2.2 秒） |
 | 体积 | 压缩包约 70–90 MB | 解压约 155–190 MB |
 | 杀软误报 | 更容易 | 较少 |
 | 排查 | 难（临时目录） | 容易 |
@@ -31,12 +31,22 @@
 
 ## 3. 打包命令（onedir）
 
+**推荐：直接用仓库里的 spec（已验证）**
+
+```bash
+python -m pip install -r requirements.txt pyinstaller
+python -m PyInstaller tools/cw-decoder.spec --noconfirm --distpath dist --workpath build
+```
+
+**等价的手写命令**
+
 ```bash
 pyinstaller ^
   --noconfirm --clean --windowed --onedir ^
   --name cw-decoder ^
   --add-data "models;models" ^
   --add-data "assets;assets" ^
+  --add-data "samples;samples" ^
   --collect-submodules scipy.signal ^
   --hidden-import pyaudiowpatch ^
   --hidden-import soundcard ^
@@ -53,6 +63,35 @@ pyinstaller ^
 ```
 
 **产物**：`dist/cw-decoder/`（整个文件夹压成 zip 即为 Release 附件）
+
+**实测体积**（v0.1.0，Python 3.12 / PyInstaller 6.22）
+
+```
+解压后：1160 个文件，191 MB
+zip：   78 MB
+启动：  1.5 秒（首次 2.2 秒）
+内存：  约 125 MB
+```
+
+---
+
+## 3.5 打包后自检（不用手点界面）
+
+```bash
+dist\cw-decoder\cw-decoder.exe --selftest
+```
+
+会在 exe 同目录写出 `self-test.txt`，内容形如：
+
+```
+sample_cq.wav / dsp: 'CQ CQ DE BD6LBA K' [0.10s]
+sample_cq.wav / ctc: 'CQ CQ DE BD6LBA K' [0.21s]
+sample_noisy.wav / dsp: 'CQ CQ DE BD6LBA K' [0.07s]
+sample_noisy.wav / ctc: 'CQ CQ DE BD6LBA K' [0.10s]
+python=3.12.15 frozen=True
+```
+
+`frozen=True` 说明跑的是打包产物；文本正确说明模型路径、依赖、音频解码都正常。
 
 ---
 
