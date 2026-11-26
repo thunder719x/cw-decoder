@@ -63,7 +63,7 @@ def _looks_like_token(t: str) -> bool:
         t.startswith(("ghp_", "gho_", "ghu_", "ghs_", "github_pat_")))
 
 
-def load_token() -> str:
+def load_token(auto_yes: bool = False) -> str:
     # 1) 环境变量
     tok = os.environ.get("GITHUB_TOKEN", "").strip()
     if tok:
@@ -93,7 +93,7 @@ def load_token() -> str:
     clip = _clipboard()
     if _looks_like_token(clip):
         print(f"检测到剪贴板里有 Token（{clip[:8]}…{clip[-4:]}）")
-        ans = input("直接使用这个 Token 吗？[Y/n] ").strip().lower()
+        ans = "y" if auto_yes else input("直接使用这个 Token 吗？[Y/n] ").strip().lower()
         if ans in ("", "y", "yes"):
             tok = clip
         else:
@@ -191,7 +191,19 @@ def main() -> int:
     ap.add_argument("--message", default="")
     ap.add_argument("--root", default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--reset-token", action="store_true", help="删除已保存的 Token，改用剪贴板里的新 Token")
+    ap.add_argument("--yes", action="store_true", help="自动接受剪贴板里的 Token（不再询问）")
     args = ap.parse_args()
+
+    if args.reset_token:
+        tp = token_path()
+        if os.path.exists(tp):
+            os.remove(tp)
+            print("已删除旧 Token：" + tp)
+        else:
+            print("没有已保存的 Token，跳过删除。")
+        print("请确保新的 Token 已经在剪贴板里（刚点过 GitHub 上的复制）")
+        print()
 
     files = collect(args.root)
     total = sum(os.path.getsize(p) for _, p in files)
@@ -205,7 +217,7 @@ def main() -> int:
         print("\n[dry-run] 未上传。")
         return 0
 
-    token = load_token()
+    token = load_token(auto_yes=args.yes)
     msg = args.message or ("上传/更新 " + time.strftime("%Y-%m-%d %H:%M"))
 
     # 1) 取当前分支头（空仓库会返回 404）
