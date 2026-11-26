@@ -14,7 +14,7 @@ env/
 # ---- 打包 ----
 build/
 dist/
-*.spec
+# 注意：tools/cw-decoder.spec 需要入库，所以不忽略 *.spec
 
 # ---- 测试素材（只保留 samples/ 下的示例） ----
 out/**/*.wav
@@ -28,9 +28,3 @@ Thumbs.db
 .vscode/
 
 python_path.txt
-
-# ---- 本机自动上传工具（仅本地，不发布） ----
-tools/upload_github.py
-tools/token.txt
-上传到GitHub.bat
-更换Token.bat
