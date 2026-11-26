@@ -13,6 +13,8 @@ if exist "%~dp0python_path.txt" (
 )
 
 if not defined PY if exist "%~dp0python\python.exe" set "PY=%~dp0python\python.exe"
+if not defined PY if exist "%~dp0.venv\Scripts\python.exe" set "PY=%~dp0.venv\Scripts\python.exe"
+if not defined PY if exist "%~dp0venv\Scripts\python.exe" set "PY=%~dp0venv\Scripts\python.exe"
 if not defined PY call :try py -3
 if not defined PY call :try python
 if not defined PY call :try python3
@@ -22,7 +24,9 @@ if not defined PY (
     echo [错误] 没找到装有依赖的 Python。
     echo.
     echo   1. 安装依赖：pip install -r requirements.txt
-    echo   2. 如果机器上有多个 Python，可在本目录新建 python_path.txt，
+    echo   2. 或者在本目录建虚拟环境：python -m venv .venv
+    echo      然后：.venv\Scripts\pip install -r requirements.txt
+    echo   3. 如果机器上有多个 Python，可在本目录新建 python_path.txt，
     echo      第一行写解释器的完整路径，例如：
     echo      C:\Python312\python.exe
     echo.

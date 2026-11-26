@@ -59,8 +59,15 @@
 ```bash
 git clone https://github.com/thunder719x/cw-decoder.git
 cd cw-decoder
+
+# 方式 1：装到系统 Python
 python -m pip install -r requirements.txt
 python run.py
+
+# 方式 2：用虚拟环境（推荐，不污染系统）
+python -m venv .venv
+.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\python run.py
 ```
 
 也可以直接访问 <https://github.com/thunder719x/cw-decoder> → 绿色 **Code** → **Download ZIP**。
