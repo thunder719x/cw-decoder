@@ -26,3 +26,9 @@ out/**/*.wav
 Thumbs.db
 .idea/
 .vscode/
+
+# ---- 本机自动上传工具（仅本地，不发布） ----
+tools/upload_github.py
+tools/token.txt
+上传到GitHub.bat
+更换Token.bat
