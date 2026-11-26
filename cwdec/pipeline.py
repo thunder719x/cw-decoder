@@ -130,7 +130,27 @@ def decode_file(path: str, backend: str = "dsp", tone: float | None = None,
         res = decode_gated(y, tone=tone, alphabet=alphabet)
     elif backend == "ctc":
         try:
-            res = ctc.decode_wav(path, get_ctc_model(), tone=tone, gate=gate)
+            # 慢速门控：CTC 只训练过标准节奏，<15 WPM 时会成片乱码（实测 5/13 WPM
+            # 的 ARRL 素材 CER 0.72 / 0.88）。这里先用 DSP 快速测一次速度，
+            # 太慢就直接用 DSP 的结果，并在 note 里标注原因。
+            slow = False
+            try:
+                from .dsp import read_wav, resample
+                _x, _sr = read_wav(path)
+                _probe = decode_gated(resample(_x, _sr), tone=tone, alphabet=alphabet)
+                slow = 0 < (_probe.get("wpm") or 0) < 15.0
+            except Exception:
+                _probe, slow = None, False
+
+            if slow and _probe is not None:
+                res = _probe
+                res["backend"] = "dsp"
+                res["note"] = "slow-speed->dsp"
+            else:
+                res = ctc.decode_wav(path, get_ctc_model(), tone=tone, gate=gate)
+                # CTC 不产生码元间隔，借用 DSP 探针算出的有效速度用于显示
+                if _probe and not res.get("wpm_eff"):
+                    res["wpm_eff"] = _probe.get("wpm_eff")
         except ImportError:
             # 没装 onnxruntime（或模型加载失败）→ 退回 DSP，并在状态里标注
             from .dsp import read_wav, resample
@@ -164,7 +184,7 @@ def decode_file(path: str, backend: str = "dsp", tone: float | None = None,
 
     res.update({
         "source": os.path.abspath(path),
-        "backend": backend,
+        "backend": res.get("backend") or backend,     # 慢速门控时保留实际用的后端
         "elapsed_s": round(time.time() - t0, 3),
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
     })

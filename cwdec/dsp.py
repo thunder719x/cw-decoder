@@ -285,31 +285,50 @@ def _kmeans1d(v: np.ndarray, k: int, iters: int = 30) -> list[float]:
 
 
 def gap_thresholds(gaps_ms: list[float], unit_ms: float) -> tuple[float, float]:
-    """Return (letter boundary, word boundary) in units.
+    """返回 (字母边界, 词边界)，单位是"单位时长"。
 
-    Element gaps are ~1 unit, so the letter boundary is fixed near 2.2.  Letter and
-    word gaps vary by operator (3/7 standard, 5/9 hand-sent, 6/22 practice), so the
-    word boundary is placed between the two observed long-gap clusters.
+    元素间隔 ≈ 1 单位，所以字母边界固定在 2 附近。
+    字母间隔和词间隔因人/因速度而异：
+        · 标准 3 / 7 单位
+        · 手键 5 / 9 单位
+        · Farnsworth 慢速 18 / 36 单位（整体放大约 4 倍）
+    因此词边界不适合写死，改为"跟着字母间隔走"：
+        词边界 = 2.2 × 字母间隔中心      （3/7 与 18/36 都满足 ≈2.3 的比例）
+    这样标准码、手键、Farnsworth 用同一套逻辑，不再依赖固定的 18 单位上限。
     """
     char_thr = 2.0
     if not gaps_ms or unit_ms <= 0:
         return char_thr, 4.5
 
     r = np.asarray(gaps_ms, dtype=float) / unit_ms
-    long_gaps = r[(r >= 2.0) & (r <= 30.0)]
+
+    # 长间隙的上限也随之放宽：Farnsworth 5 WPM 的词间隔能到 60+ 单位
+    long_gaps = r[(r >= 2.0) & (r <= 90.0)]
     if long_gaps.size < 8:
         return char_thr, 4.5
 
     cen = np.exp(np.array(_kmeans1d(np.log(long_gaps), 2)))
     cen = sorted(float(c) for c in cen if c > 1.0)
+
     if len(cen) == 2 and cen[1] / max(cen[0], 1e-6) > 1.35:
-        word_thr = float(np.sqrt(cen[0] * cen[1]))
+        # 两簇分得开：低簇 = 字母间隔，高簇 = 词间隔
+        # 分界取对数中点（几何平均）——对 3/7、5/9、18/36 都落在两簇正中间
+        letter_c, word_c = cen[0], cen[1]
+        # 分界：取几何平均，但不超过"字母间隔 × 1.25"。
+        # 原因：少数词间隔会比正常值短很多（实测 ARRL 5 WPM 里出现 25 单位，
+        # 而字母 19、词 43）。只用几何平均会把这个短词间隔并进上一个词。
+        word_thr = float(min(np.sqrt(letter_c * word_c), 1.25 * letter_c))
+    elif len(cen) == 2:
+        # 两簇靠得太近（例如只有一个词的报文）：保守处理
+        word_thr = max(4.5, 1.5 * cen[0])
     else:
         word_thr = max(4.5, 1.5 * (cen[0] if cen else 3.0))
+
     word_thr = max(word_thr, 3.8)
 
     char_thr = float(min(max(char_thr, 1.8), 3.2))
-    word_thr = float(min(max(word_thr, char_thr + 1.4), 18.0))
+    # 上限从 18 放宽到 45：Farnsworth 5 WPM 的字母/词间隔在 18/36 单位
+    word_thr = float(min(max(word_thr, char_thr + 1.4), 45.0))
     return char_thr, word_thr
 
 
@@ -352,6 +371,32 @@ def decode_symbols(runs: list[tuple[bool, int]], sr: int,
     unit = float(np.median(local_units)) if local_units else unit
 
     char_thr, word_thr = gap_thresholds(gaps_ms, unit)
+
+    # ---- 有效速度（Farnsworth） ----
+    # 字母间隔 = 3 个"有效单位"。标准码时字距没被拉长，
+    # 算出来的有效速度 = 字符速度；Farnsworth 慢速时算出来就是 5 WPM 这类数值。
+    # 有效速度用 PARIS 标准反算：把整段换算成"标准单位数"，
+    # 再除以真实时长。这样与"数每个字母间隔"无关，标准码与 Farnsworth 都适用。
+    #   WPM_eff = 1.2 × 总单位数 / 时长(秒)
+    wpm_eff = None
+    try:
+        total_units = 0.0
+        for st, ln in runs:
+            d_units = (ln / sr * 1000.0) / unit
+            if st:
+                total_units += 1.0 if d_units < 1.8 else 3.0
+            else:
+                if d_units < char_thr:
+                    total_units += 1.0
+                elif d_units < word_thr:
+                    total_units += 3.0
+                else:
+                    total_units += 7.0
+        total_s = sum(ln for _, ln in runs) / sr
+        if total_s > 1.0 and total_units > 10:
+            wpm_eff = round(1.2 * total_units / total_s, 1)
+    except Exception:
+        wpm_eff = None
 
     idx_mark = 0
     symbols: list[str] = []
@@ -417,6 +462,7 @@ def decode_symbols(runs: list[tuple[bool, int]], sr: int,
         "codes": trimmed,
         "unit_ms": round(unit, 1),
         "wpm": round(1200.0 / unit, 1) if unit else 0.0,
+        "wpm_eff": wpm_eff,       # Farnsworth 有效速度；标准码时与 wpm 相同
         "marks": marks_csv,
     }
 
@@ -449,7 +495,7 @@ def decode_samples(x: np.ndarray, tone: float | None = None,
     x = np.asarray(x, dtype=np.float32)
     x = x - x.mean()
     if x.size == 0:
-        return {"text": "", "codes": [], "unit_ms": 0.0, "wpm": 0.0, "marks": [],
+        return {"text": "", "codes": [], "unit_ms": 0.0, "wpm": 0.0, "wpm_eff": None, "marks": [],
                 "tone_hz": 0.0, "duration_s": 0.0, "snr_db": None}
     peak = float(np.max(np.abs(x)) or 1.0)
     x = x / peak
@@ -465,7 +511,7 @@ def decode_samples(x: np.ndarray, tone: float | None = None,
                 x = x[a:b]
 
     if len(x) / TARGET_SR < min_duration_s:
-        return {"text": "", "codes": [], "unit_ms": 0.0, "wpm": 0.0, "marks": [],
+        return {"text": "", "codes": [], "unit_ms": 0.0, "wpm": 0.0, "wpm_eff": None, "marks": [],
                 "tone_hz": 0.0, "duration_s": round(len(x) / TARGET_SR, 2), "snr_db": None}
 
     f0 = tone if tone else estimate_tone(x)

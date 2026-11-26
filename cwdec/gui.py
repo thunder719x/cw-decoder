@@ -1704,8 +1704,12 @@ class App(tk.Tk):
         extra = ""
         q = self.txt.get("1.0", "end").count("?")
         wpm = getattr(self.stream_dec, "wpm", None) if self.stream_dec is not None else None
+        we = getattr(self.stream_dec, "wpm_eff", None) if self.stream_dec is not None else None
         if wpm:
-            extra = f"  {wpm:4.1f} WPM"
+            if we and abs(we - wpm) > 0.6:
+                extra = f"  {wpm:4.1f}/{we:3.1f} WPM"
+            else:
+                extra = f"  {wpm:4.1f} WPM"
         if q:
             extra += f"  ?x{q}"
         nfix = getattr(self.stream_dec, "corrections", 0) if self.stream_dec is not None else 0
@@ -2558,7 +2562,13 @@ class App(tk.Tk):
         self._render()
         self._log_click(res)
 
+        # 速度显示：Farnsworth 时同时给出字符速度与有效速度（如 14.8/5.0）
         wpm = res.get("wpm") or "—"
+        we = res.get("wpm_eff")
+        if isinstance(we, (int, float)) and isinstance(wpm, (int, float)) and abs(we - wpm) > 0.6:
+            wpm = f"{wpm:.1f}/{we:.1f}"
+        elif isinstance(wpm, (int, float)):
+            wpm = f"{wpm:.1f}"
         sus = int(res.get("gate_suspects") or 0)
         snr = res.get("snr_db")
         snr_txt = self._snr_text(snr)

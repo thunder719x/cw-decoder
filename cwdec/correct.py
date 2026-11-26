@@ -165,6 +165,11 @@ def correct_token(token: str, max_distance: int = 1):
             continue
         if DIGIT_RE.search(word) != DIGIT_RE.search(t):
             continue                       # 不能凭空引入/去掉数字
+        # 必须"字数相同"：to_morse 是去掉字母边界的连续码，
+        # 不同字数的词可能只差一个码元（MEANS=--..--.... 与 QTH=--.--.... 只差一个点），
+        # 但那是"字母边界挪位"而不是"抄错一个码元"，不能拿来纠错。
+        if len(word) != len(t):
+            continue
         if abs(len(code) - len(src)) != 1:
             continue                       # 只接受"多一个或少一个码元"
         d = morse_distance(src, code)
