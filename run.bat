@@ -12,9 +12,16 @@ if exist "%~dp0python_path.txt" (
     set /p PY=<"%~dp0python_path.txt"
 )
 
-if not defined PY if exist "%~dp0python\python.exe" set "PY=%~dp0python\python.exe"
-if not defined PY if exist "%~dp0.venv\Scripts\python.exe" set "PY=%~dp0.venv\Scripts\python.exe"
-if not defined PY if exist "%~dp0venv\Scripts\python.exe" set "PY=%~dp0venv\Scripts\python.exe"
+rem 1) python_path.txt 里写的路径也要验证依赖
+if defined PY (
+    %PY% -c "import numpy, scipy, sounddevice" >nul 2>nul
+    if errorlevel 1 set "PY="
+)
+
+rem 2) 其余候选：都要通过依赖检查才采用
+if not defined PY call :try "%~dp0python\python.exe"
+if not defined PY call :try "%~dp0.venv\Scripts\python.exe"
+if not defined PY call :try "%~dp0venv\Scripts\python.exe"
 if not defined PY call :try py -3
 if not defined PY call :try python
 if not defined PY call :try python3
