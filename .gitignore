@@ -27,6 +27,8 @@ Thumbs.db
 .idea/
 .vscode/
 
+python_path.txt
+
 # ---- 本机自动上传工具（仅本地，不发布） ----
 tools/upload_github.py
 tools/token.txt

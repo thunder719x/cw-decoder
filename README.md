@@ -65,7 +65,11 @@ python run.py
 
 也可以直接访问 <https://github.com/thunder719x/cw-decoder> → 绿色 **Code** → **Download ZIP**。
 
-Windows 也可以直接双击 `run.bat`（会自动寻找装有依赖的 Python）。
+Windows 也可以直接双击 `run.bat`：它会依次尝试 `python\python.exe`、`py -3`、`python`、`python3`，
+并检查 numpy / scipy / sounddevice 是否装了。
+
+> 机器上有多个 Python 时，在本目录新建 `python_path.txt`，第一行写解释器完整路径即可，
+> 例如 `C:\Python312\python.exe`（该文件不会上传到仓库）。
 
 > 依赖：`numpy` `scipy` `sounddevice` `PyAudioWPatch` `soundcard` `onnxruntime` `pillow`
 > （`tkinter` 随 Python 自带）

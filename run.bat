@@ -2,27 +2,40 @@
 chcp 65001 >nul
 cd /d "%~dp0"
 
-rem 优先使用装有 numpy/onnxruntime 的解释器
+rem 找一个「装了 numpy / scipy / sounddevice」的 Python：
+rem   1) python_path.txt 里写死的路径（本机使用，不随仓库发布）
+rem   2) 程序目录下的 python\python.exe（便携版）
+rem   3) py -3 / python / python3
 set "PY="
-if exist "F:\QQBot\AstrBot\.venv\Scripts\python.exe" set "PY=F:\QQBot\AstrBot\.venv\Scripts\python.exe"
-if not defined PY if exist "%~dp0python\python.exe" set "PY=%~dp0python\python.exe"
-if not defined PY set "PY=python"
 
-"%PY%" -c "import numpy, sounddevice" 2>nul
-if errorlevel 1 (
+if exist "%~dp0python_path.txt" (
+    set /p PY=<"%~dp0python_path.txt"
+)
+
+if not defined PY if exist "%~dp0python\python.exe" set "PY=%~dp0python\python.exe"
+if not defined PY call :try py -3
+if not defined PY call :try python
+if not defined PY call :try python3
+
+if not defined PY (
     echo.
-    echo [错误] 当前 Python 缺少依赖：
-    echo         %PY%
-    echo         请确认 numpy / sounddevice 已安装，或改用：
-    echo         F:\QQBot\AstrBot\.venv\Scripts\python.exe run.py
+    echo [错误] 没找到装有依赖的 Python。
+    echo.
+    echo   1. 安装依赖：pip install -r requirements.txt
+    echo   2. 如果机器上有多个 Python，可在本目录新建 python_path.txt，
+    echo      第一行写解释器的完整路径，例如：
+    echo      C:\Python312\python.exe
     echo.
     pause
     exit /b 1
 )
 
-"%PY%" run.py
-if errorlevel 1 (
-    echo.
-    echo [程序异常退出] 错误信息见上
-    pause
-)
+%PY% run.py %*
+exit /b %errorlevel%
+
+:try
+if defined PY exit /b 0
+%* -c "import numpy, scipy, sounddevice" >nul 2>nul
+if errorlevel 1 exit /b 0
+set "PY=%*"
+exit /b 0
