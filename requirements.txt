@@ -1,0 +1,10 @@
+# CW Decoder 运行时依赖
+# 建议 Python 3.10+（开发与测试使用 3.12）
+
+numpy>=1.24,<3
+scipy>=1.10,<2
+sounddevice>=0.4.6
+PyAudioWPatch>=0.2.12
+soundcard>=0.4.2
+onnxruntime>=1.16
+pillow>=10.0
