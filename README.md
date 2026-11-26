@@ -4,6 +4,8 @@
 内置 **DSP 规则算法** 与 **CTC 神经网络** 两种后端，带多频道扫描、纠错、瀑布图、发报练习。
 
 > 界面支持中文 / English · Windows 桌面程序 · 不联网、不上传任何数据
+>
+> **项目地址：<https://github.com/thunder719x/cw-decoder>**
 
 ![文件模式](docs/images/file-mode.png)
 
@@ -52,11 +54,13 @@
 ### 方式 B：源码运行（需要 Python 3.10+）
 
 ```bash
-# 下载源码（页面 Code → Download ZIP，或 git clone 你的仓库地址）
+git clone https://github.com/thunder719x/cw-decoder.git
 cd cw-decoder
 python -m pip install -r requirements.txt
 python run.py
 ```
+
+也可以直接访问 <https://github.com/thunder719x/cw-decoder> → 绿色 **Code** → **Download ZIP**。
 
 Windows 也可以直接双击 `run.bat`（会自动寻找装有依赖的 Python）。
 
@@ -253,7 +257,7 @@ docs/NOTICE-models.md 模型来源说明
 见 [LICENSE](LICENSE)。
 
 ```
-Copyright (c) 2026 BD6LBA · GitHub: thunder719x
+Copyright (c) 2026 BD6LBA <https://github.com/thunder719x>
 ```
 
 **你可以**：自由使用、修改、分发，包括商用。

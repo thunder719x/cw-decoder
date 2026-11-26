@@ -1,7 +1,7 @@
 # CW Decoder 技术说明
 
 > 本文档描述程序的算法、参数与实测数据，供想了解原理、二次开发或复现测试的人参考。
-> 版本对应 v0.1.0。文中数值均为本机（Windows 11 / Python 3.12 / Realtek 板载声卡）实测。
+> 版本对应 v0.1.0。项目地址：<https://github.com/thunder719x/cw-decoder>文中数值均为本机（Windows 11 / Python 3.12 / Realtek 板载声卡）实测。
 
 ---
 

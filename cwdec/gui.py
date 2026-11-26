@@ -1,5 +1,5 @@
 # CW Decoder — 摩斯码解码器
-# Copyright (c) 2026 BD6LBA (GitHub: thunder719x)
+# Copyright (c) 2026 BD6LBA <https://github.com/thunder719x>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """Tk GUI for CW decoding — WAV input, DSP/CTC backends, clickable spectrum.
@@ -180,6 +180,8 @@ def detect_candidates(spec: np.ndarray, freqs: np.ndarray, audio: np.ndarray | N
 
     peaks = []
     for i in range(3, len(freqs) - 3):
+        if not (F_MIN <= freqs[i] <= F_MAX):     # 只认界面上显示的范围，避免把工频/低频隆隆当频道
+            continue
         if depth[i] < min_depth_db or level[i] < floor + above_floor_db:
             continue
         if level[i] >= level[i - 1] and level[i] >= level[i + 1]:
@@ -197,6 +199,8 @@ def detect_candidates(spec: np.ndarray, freqs: np.ndarray, audio: np.ndarray | N
     # 但它常常就是真实信号（例如信标前的长载波），必须给它一个位置。
     strong = []
     for i in range(3, len(freqs) - 3):
+        if not (F_MIN <= freqs[i] <= F_MAX):
+            continue
         if level[i] < floor + 10.0:
             continue
         if level[i] >= level[i - 1] and level[i] >= level[i + 1]:

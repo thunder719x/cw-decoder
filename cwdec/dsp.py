@@ -1,5 +1,5 @@
 # CW Decoder — 摩斯码解码器
-# Copyright (c) 2026 BD6LBA (GitHub: thunder719x)
+# Copyright (c) 2026 BD6LBA <https://github.com/thunder719x>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """Classic DSP backend for CW decoding (no machine learning).
