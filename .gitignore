@@ -1,0 +1,28 @@
+# ---- 运行产物 ----
+out/
+crash.log
+*.log
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ---- 打包 ----
+build/
+dist/
+*.spec
+
+# ---- 测试素材（只保留 samples/ 下的示例） ----
+out/**/*.wav
+*.wav
+!samples/*.wav
+
+# ---- 其他 ----
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
