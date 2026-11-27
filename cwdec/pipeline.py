@@ -18,37 +18,6 @@ _MODEL_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "models", 
 _ctc_model: ctc.CtcModel | None = None
 
 
-def _split_sessions(x: np.ndarray, min_gap_s: float = 2.5):
-    """Split audio at long silences (natural boundaries between overs)."""
-    env = dsp.envelope(dsp.bandpass(np.asarray(x, dtype=np.float32),
-                                    dsp.TARGET_SR, 700.0, 2500.0), dsp.TARGET_SR)
-    if env.size == 0:
-        return [(0, len(x))]
-    thr = float(np.percentile(env, 20)) + 0.05 * float(env.max() - np.percentile(env, 20))
-    silent = env < thr
-    runs = dsp._runs(silent)
-    spans, pos = [], 0
-    min_gap = int(min_gap_s * dsp.TARGET_SR)
-    for st, ln in runs:
-        if st and ln >= min_gap:
-            spans.append((pos, pos + 0))
-            pos = pos + ln
-        else:
-            pos += ln
-    # 简化：按静音段切
-    spans, start = [], 0
-    pos = 0
-    for st, ln in runs:
-        if st and ln >= min_gap:
-            if pos - start > dsp.TARGET_SR:
-                spans.append((start, pos))
-            start = pos + ln
-        pos += ln
-    if len(x) - start > dsp.TARGET_SR:
-        spans.append((start, len(x)))
-    return spans or [(0, len(x))]
-
-
 def decode_gated(x: np.ndarray, tone: float | None = None,
                  scan_s: float = 5.0, min_tonality_db: float = 22.0,
                  min_regularity: float = 0.45, pad_s: float = 0.3,
@@ -148,9 +117,19 @@ def decode_file(path: str, backend: str = "dsp", tone: float | None = None,
                 res["note"] = "slow-speed->dsp"
             else:
                 res = ctc.decode_wav(path, get_ctc_model(), tone=tone, gate=gate)
-                # CTC 不产生码元间隔，借用 DSP 探针算出的有效速度用于显示
-                if _probe and not res.get("wpm_eff"):
-                    res["wpm_eff"] = _probe.get("wpm_eff")
+                # CTC 不产生码元间隔：借用 DSP 探针的电平/速度/时序比做"质量指示"
+                if _probe:
+                    if not res.get("wpm_eff"):
+                        res["wpm_eff"] = _probe.get("wpm_eff")
+                    res.setdefault("level_dbfs", _probe.get("level_dbfs"))
+                    res.setdefault("timing_ratio", _probe.get("timing_ratio"))
+                    res.setdefault("regularity", _probe.get("regularity"))
+                    # SNR 统一用 DSP 探针的值：
+                    # CTC 路径会裁掉长载波、补静音，统计口径不同，数值会偏高 2–5 dB，
+                    # 导致切换后端时同一段录音的 SNR 跳变（指标应只有一个来源）
+                    if _probe.get("snr_db") is not None:
+                        res["snr_db"] = _probe.get("snr_db")
+                        res["snr_from"] = "dsp-probe"
         except ImportError:
             # 没装 onnxruntime（或模型加载失败）→ 退回 DSP，并在状态里标注
             from .dsp import read_wav, resample
@@ -174,9 +153,13 @@ def decode_file(path: str, backend: str = "dsp", tone: float | None = None,
 
     if res.get("text") and fix_text and alphabet == "latin":
         # 俄文模式不做英文单词纠错（白名单是英文的，会把西里尔文本搞乱）
-        fixed, changes = correct.correct_text(res["text"])
-        fixed, sp = correct.repair_spacing(fixed)
-        changes = list(changes) + list(sp)
+        #
+        # 2026-11-27：词替换（correct_text）默认停用。
+        # 实测（ARRL 9 文件 / 10,363 字符）：关闭后 0 错误，开启后 10 个错误，
+        # 且麦克风 11 条与 −5…−12 dB 合成扫描均无任何收益。
+        # 只保留"空格修复"（不改变字母，只补空格）。
+        fixed, sp = correct.repair_spacing(res["text"])
+        changes = list(sp)
         if changes:
             res["text_raw"] = res["text"]
             res["text"] = fixed
@@ -185,6 +168,7 @@ def decode_file(path: str, backend: str = "dsp", tone: float | None = None,
     res.update({
         "source": os.path.abspath(path),
         "backend": res.get("backend") or backend,     # 慢速门控时保留实际用的后端
+        "alphabet": alphabet,                         # 供界面判断（西里尔时不做非 ASCII 惩罚）
         "elapsed_s": round(time.time() - t0, 3),
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
     })

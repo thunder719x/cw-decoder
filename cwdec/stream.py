@@ -167,19 +167,6 @@ class StreamDecoder:
         if self.on_status:
             self.on_status(self)
 
-    def _update_unit_from_gap(self, gap_ms: float):
-        """间隙也在 1/3/7 个单位上成簇，用最小的那簇校正单位时长。"""
-        self._recent_gaps.append(gap_ms)
-        if len(self._recent_gaps) > 60:
-            self._recent_gaps.pop(0)
-        if len(self._recent_gaps) >= 4 and self._recent_marks:
-            arr = np.sort(np.asarray(self._recent_gaps))
-            take = max(2, int(len(arr) * 0.35))
-            gap_unit = float(np.median(arr[:take]))
-            if 0.5 * self.unit_ms <= gap_unit <= 2.0 * self.unit_ms:
-                self.unit_ms = 0.5 * (self.unit_ms + gap_unit)
-                self.unit_ms = max(25.0, min(200.0, self.unit_ms))
-
     def _decode_marks(self, marks: list[float]) -> str:
         code = "".join("-" if m > 1.5 * self.unit_ms else "." for m in marks)
         return MORSE.get(code, "?")

@@ -242,13 +242,20 @@ def segment_token(tok: str, max_parts: int = 8) -> list[str] | None:
 
     walk(0, [])
     if len(sols) == 1:
-        return sols[0]
+        parts = sols[0]
+        # 2026-11-27：避免把正常英文词拆开（实测 DROP → "DR OP"）。
+        # 接受条件：段数 ≥3，或含数字（粘连呼号），或整串 ≥10 字符。
+        if len(parts) >= 3 or len(t) >= 10 or any(ch.isdigit() for ch in t):
+            return parts
+        return None
     if sols:
         # 多种切法时：取"段数最少"的那种（尽量保住长呼号），且必须唯一
         best_n = min(len(x) for x in sols)
         cands = [x for x in sols if len(x) == best_n]
         if len(cands) == 1:
-            return cands[0]
+            parts = cands[0]
+            if len(parts) >= 3 or len(t) >= 10 or any(ch.isdigit() for ch in t):
+                return parts
 
     return None
 

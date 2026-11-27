@@ -28,3 +28,7 @@ Thumbs.db
 .vscode/
 
 python_path.txt
+
+# ---- 投稿材料（放在仓库外，这里再加一道保险）----
+submission/
+投稿*/

@@ -14,7 +14,7 @@ import sys
 import traceback
 from ctypes import wintypes
 
-TITLES = ("CW 解码器", "CW Decoder")
+TITLES = ("CW 解码器", "CW Decoder", "CW декодер")
 
 
 def _log_path() -> str:
@@ -93,6 +93,15 @@ def _selftest() -> int:
                     lines.append(f"{name} / {backend}: ERROR {type(e).__name__}: {e}")
     except Exception as e:
         lines.append(f"IMPORT ERROR {type(e).__name__}: {e}")
+    # 界面语言自检（确认多语言资源确实被打进包里）
+    try:
+        from cwdec.gui import STRINGS
+        lines.append("ui_langs=" + ",".join(STRINGS))
+        for lang in STRINGS:
+            lines.append(f"ui_{lang}_title={STRINGS[lang].get('title', '')}")
+    except Exception as e:
+        lines.append(f"UI ERROR {type(e).__name__}: {e}")
+
     lines.append(f"python={sys.version.split()[0]} frozen={getattr(sys,'frozen',False)}")
     try:
         with open(out, "w", encoding="utf-8") as f:

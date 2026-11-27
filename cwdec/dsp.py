@@ -183,6 +183,40 @@ def _kmeans2(v: np.ndarray, iters: int = 25) -> tuple[float, float]:
     return (min(c1, c2), max(c1, c2))
 
 
+def timing_ratio(env: np.ndarray) -> float | None:
+    """点长 ÷ 元素间隔，用于"信号质量"提示（只读，不参与解码判决）。
+
+    正常 CW ≈ 1.0；混响/远距离把点拉长、间隔填短 → >1.5；
+    码元被切碎 → <0.7。返回 None 表示样本不足无法判断。
+    """
+    if env.size < 2000:
+        return None
+    try:
+        lo = float(np.percentile(env, 20))
+        hi = float(np.percentile(env, 90))
+        if hi <= lo * 1.6:
+            return None
+        runs = clean_runs(_runs(env > (lo + 0.45 * (hi - lo))), TARGET_SR)
+        marks = np.array([l for st, l in runs if st], dtype=float) / TARGET_SR * 1000.0
+        gaps = np.array([l for st, l in runs if not st], dtype=float) / TARGET_SR * 1000.0
+        if marks.size < 20 or gaps.size < 10:
+            return None
+        if float(np.max(marks)) > 2000.0:
+            return None
+        q = np.percentile(marks, 25)
+        dot = float(np.median(marks[marks <= max(q * 1.6, q + 10)]))
+        gq = np.percentile(gaps, 25)
+        eg = gaps[gaps <= max(gq * 1.8, gq + 8)]
+        if eg.size < 3:
+            return None
+        egm = float(np.median(eg))
+        if egm <= 0:
+            return None
+        return round(dot / egm, 2)
+    except Exception:
+        return None
+
+
 def binarize(env: np.ndarray) -> np.ndarray:
     """Adaptive threshold based on percentiles (robust to impulsive noise).
 
@@ -357,7 +391,7 @@ def decode_symbols(runs: list[tuple[bool, int]], sr: int,
     except Exception:
         pass
 
-    # 受限惯性跟踪（借鉴 fldigi）：单位时长只能慢慢跟随，且不能离谱
+    # 受限惯性跟踪：单位时长只能慢慢跟随，且不能离谱
     #  · 只有"像点"的时长参与更新
     #  · 步长很小（0.06），避免被单个噪声带偏
     #  · 超出 0.5–1.8 倍的样本直接丢弃
@@ -497,6 +531,8 @@ def decode_samples(x: np.ndarray, tone: float | None = None,
     if x.size == 0:
         return {"text": "", "codes": [], "unit_ms": 0.0, "wpm": 0.0, "wpm_eff": None, "marks": [],
                 "tone_hz": 0.0, "duration_s": 0.0, "snr_db": None}
+    peak0 = float(np.max(np.abs(x)) or 1.0)
+    level_in = round(float(20.0 * np.log10(np.sqrt(np.mean(x ** 2)) + 1e-12)), 1)   # 输入电平（归一化前）
     peak = float(np.max(np.abs(x)) or 1.0)
     x = x / peak
 
@@ -521,7 +557,8 @@ def decode_samples(x: np.ndarray, tone: float | None = None,
     runs = clean_runs(_runs(mask), TARGET_SR)
     res = decode_symbols(runs, TARGET_SR, alphabet=alphabet)
     res.update({"tone_hz": round(f0, 1), "duration_s": round(len(x) / TARGET_SR, 2),
-                "snr_db": estimate_snr(x, f0)})
+                "snr_db": estimate_snr(x, f0), "timing_ratio": timing_ratio(env),
+                "level_dbfs": level_in})
     return res
 
 

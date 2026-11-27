@@ -40,93 +40,147 @@ except Exception:                                    # pragma: no cover
 
 STRINGS = {
     "zh": {
-        "title": "CW 解码器",
-        "open": "打开 WAV", "close_file": "关闭文件", "decode": "开始解码", "save": "另存文本",
-        "clear": "清空", "cyr": "西里尔", "latin": "拉丁",
-        "gate": "门控", "lang": "语言", "backend": "后端",
-        "src": "文件", "tone": "音调", "wpm": "速度", "dur": "时长",
+        "title": "CW 解码器", "open": "打开 WAV", "close_file": "关闭文件",
+        "decode": "开始解码", "save": "另存文本", "clear": "清空",
+        "cyr": "西里尔", "latin": "拉丁", "gate": "门控(文件CTC)",
+        "lang": "语言", "backend": "后端", "src": "文件",
+        "tone": "音调", "wpm": "速度", "dur": "时长",
         "elapsed": "耗时", "none": "—", "no_file": "请先选择一个 WAV 文件",
-        "error": "错误", "hint": "点击频谱选频率，或在右侧输入 Hz 后回车",
-        "spectrum": "频谱（横轴时间 s，纵轴频率 Hz）", "selected": "已选",
-        "go": "解码", "hz": "Hz", "bad_freq": "频率需在 100–3000 Hz 之间",
-        "decoding": "正在解码…",
-        "auto": "自动", "cmp": "对比", "be_dsp": "DSP（规则算法）", "be_ctc": "CTC（神经网络）", "be_auto": "自动（两个都跑）",
-        "play": "▶ 播放", "pause": "⏸ 暂停", "stop": "⏹ 停止", "reset": "复位",
-        "ch_only": "只播放选中频道", "bw": "带宽", "vol": "音量", "band": "播放带宽",
-        "gate_hint": "门控：仅文件模式 + CTC（标记可疑字符）",
-        "fix_hint": "纠错：文件模式与实时模式都生效",
-        "live": "实时输入", "cap_start": "开始监听", "cap_stop": "停止",
-        "cap_save": "保存录音(≤120s)", "cap_saved": "已保存", "cap_running": "监听中", "live_dec": "实时解码", "live_be": "实时算法", "fix": "纠错(通用)", "gate": "门控(文件CTC)", "multi": "多频道", "live_click_hint": "实时模式：用「多频道」列表或手动输入 Hz 来换台", "follow": "跟随频率",
-        "fx_hint": "提示：系统音频增强正在压缩动态范围，建议在声音设置里关闭它",
-        "cap_idle": "未监听", "cap_none": "没有可用的输入设备",
-        "stop_hint": "已停止监听 · 文本已保留（如需按其他频率重解，请保存录音后用文件模式）",
-        "cap_stopped": "已停止监听 · 录音可保存最近 {sec} 秒",
-        "dsp_desc": "规则算法：包络阈值 + 点划时长判定",
-        "ctc_desc": "神经网络：11 维声学特征 + CTC 解码", "cmp_title": "两后端对比", "agree": "一致度",
-        "snr_high": "高", "snr_good": "良好", "snr_low": "低", "snr_vlow": "极低",
-        "cand": "频道", "cand_tip": "解码质量",
-        "txtcap": "解码结果", "alpha": "字母表", "alpha_la": "拉丁", "alpha_ru": "西里尔",
-        "empty_file": "打开 WAV 点「开始解码」，或点「开始监听」实时接收",
-        "empty_live": "正在等待信号…（锁定音调后开始出字）",
-        "txpad": "发送练习", "menu_tools": "工具", "menu_file": "文件",
-        "txpad_title": "CW 发送练习",
+        "error": "错误", "hint": "点击频谱选频率，或在右侧输入 Hz 后回车", "spectrum": "频谱（横轴时间 s，纵轴频率 Hz）",
+        "selected": "已选", "go": "解码", "hz": "Hz",
+        "bad_freq": "频率需在 100–3000 Hz 之间", "decoding": "正在解码…", "auto": "自动",
+        "cmp": "对比", "be_dsp": "DSP（规则算法）", "be_ctc": "CTC（神经网络）",
+        "be_auto": "自动（两个都跑）", "play": "▶ 播放", "pause": "⏸ 暂停",
+        "stop": "⏹ 停止", "reset": "复位", "ch_only": "只播放选中频道",
+        "bw": "带宽", "vol": "音量", "band": "播放带宽",
+        "gate_hint": "门控：仅文件模式 + CTC（标记可疑字符）", "fix_hint": "纠错：文件模式与实时模式都生效", "live": "实时输入",
+        "cap_start": "开始监听", "cap_stop": "停止", "cap_save": "保存录音(≤120s)",
+        "cap_saved": "已保存", "cap_running": "监听中", "live_dec": "实时解码",
+        "live_be": "实时算法", "fix": "纠错(通用)", "multi": "多频道",
+        "live_click_hint": "实时模式：用「多频道」列表或手动输入 Hz 来换台", "follow": "跟随频率", "fx_hint": "提示：系统音频增强正在压缩动态范围，建议在声音设置里关闭它",
+        "cap_idle": "未监听", "cap_none": "没有可用的输入设备", "stop_hint": "已停止监听 · 文本已保留（如需按其他频率重解，请保存录音后用文件模式）",
+        "cap_stopped": "已停止监听 · 录音可保存最近 {sec} 秒", "dsp_desc": "规则算法：包络阈值 + 点划时长判定", "ctc_desc": "神经网络：11 维声学特征 + CTC 解码",
+        "cmp_title": "两后端对比", "agree": "一致度", "snr_high": "高",
+        "snr_good": "良好", "snr_low": "低", "snr_vlow": "极低",
+        "cand": "频道", "cand_tip": "解码质量", "txtcap": "解码结果",
+        "alpha": "字母表", "alpha_la": "拉丁", "alpha_ru": "西里尔",
+        "empty_file": "打开 WAV 点「开始解码」，或点「开始监听」实时接收", "empty_live": "正在等待信号…（锁定音调后开始出字）", "txpad": "发送练习",
+        "menu_tools": "工具", "menu_file": "文件", "txpad_title": "CW 发送练习",
         "txpad_template": "模板", "txpad_call": "呼号", "txpad_text": "要发送的内容",
-        "txpad_tone": "音调 (Hz)", "txpad_wpm": "速度",
-        "txpad_play": "▶ 播放", "txpad_stop": "⏹ 停止", "txpad_save": "💾 保存 WAV",
-        "txpad_close": "关闭", "txpad_empty": "请先输入要发送的内容",
-        "txpad_saved": "已保存到：{path}",
-        "txpad_info": "{chars} 个字符 · {wpm} WPM · {tone} Hz · 约 {dur} 秒",
-        "tpl_cq": "CQ CQ CQ DE {call}", "tpl_cq_test": "CQ TEST",
-        "tpl_rst": "信号报告 RST", "tpl_73": "TU 73 SK",
-        "tpl_qrl": "QRL?（频率占用询问）", "tpl_qrz": "QRZ?（谁在呼叫我）",
-        "tpl_info": "NAME / QTH 介绍", "tpl_pse_k": "PSE K（请继续）",
+        "txpad_tone": "音调 (Hz)", "txpad_wpm": "速度", "txpad_play": "▶ 播放",
+        "txpad_stop": "⏹ 停止", "txpad_save": "💾 保存 WAV", "txpad_close": "关闭",
+        "txpad_empty": "请先输入要发送的内容", "txpad_saved": "已保存到：{path}", "txpad_info": "{chars} 个字符 · {wpm} WPM · {tone} Hz · 约 {dur} 秒",
+        "tpl_cq": "CQ CQ CQ DE {call}", "tpl_cq_test": "CQ TEST", "tpl_rst": "信号报告 RST",
+        "tpl_73": "TU 73 SK", "tpl_qrl": "QRL?（频率占用询问）", "tpl_qrz": "QRZ?（谁在呼叫我）",
+        "tpl_info": "NAME / QTH 介绍", "tpl_pse_k": "PSE K（请继续）", "col_freq": "频率 Hz",
+        "col_dbfs": "强度 dB", "col_wpm": "速度", "col_call": "呼号 / 片段",
+        "q_signal": "信号", "q_level": "电平", "q_snr": "SNR",
+        "q_ratio": "时序", "q_decode": "解码", "q_hold": "（保持）",
+        "q_stopped": "—（已停止）", "q_none": "无", "q_yes": "有",
+        "q_fix": "纠错", "q_lvl_low": "⚠电平", "q_lvl": "电平",
+        "q_good": "可信", "q_suspect": "可疑", "q_bad": "不可信",
+        "tip_live_title": "实时信号质量（最近 10 秒）", "tip_stop_title": "实时信号质量（已停止 · 最后更新 {ts}）", "tip_lvl_rule": "≥-28 绿 · -33~-28 黄 · <-33 红",
+        "tip_snr_rule": "≥18 绿 · 12~18 黄 · <12 红 · 参考带宽 180 Hz", "tip_sig_rule": "电平 > -60 dBFS 且音调性 ≥ 15（取最近 2 秒）", "tip_live_foot": "数值每秒更新、约 3 秒平滑；颜色需连续 2 秒确认；停止监听后冻结。",
+        "tip_stop_foot": "以上为最后数值；复位后清除。", "tip_file_title": "信号质量（详细）", "tip_ratio_rule": "0.80~1.35 正常 · >1.55 混响拉伸 · <0.62 码元碎裂",
+        "tip_decode_rule": "综合文本可信度与码元规律性", "tip_reg": "码元落在 1×/3× 单位网格的比例", "tip_textline": "? {q:.1f}% · 单字 {single:.1f}% · 非 ASCII {nonascii:.1f}%",
+        "tip_no_data": "—（暂无数据）", "q_reg": "规律", "q_text": "文本"
     },
     "en": {
-        "title": "CW Decoder",
-        "open": "Open WAV", "close_file": "Close", "decode": "Decode", "save": "Save text",
-        "clear": "Clear", "cyr": "Cyrillic", "latin": "Latin",
-        "gate": "Gate", "lang": "Language", "backend": "Backend",
-        "src": "File", "tone": "Tone", "wpm": "Speed", "dur": "Duration",
+        "title": "CW Decoder", "open": "Open WAV", "close_file": "Close",
+        "decode": "Decode", "save": "Save text", "clear": "Clear",
+        "cyr": "Cyrillic", "latin": "Latin", "gate": "Gate (file/CTC)",
+        "lang": "Language", "backend": "Backend", "src": "File",
+        "tone": "Tone", "wpm": "Speed", "dur": "Duration",
         "elapsed": "Elapsed", "none": "—", "no_file": "Please choose a WAV file first",
-        "error": "Error", "hint": "Click the spectrogram, or type a frequency and press Enter",
-        "spectrum": "Spectrogram (x: time s, y: frequency Hz)", "selected": "selected",
-        "go": "Decode", "hz": "Hz", "bad_freq": "Frequency must be 100–3000 Hz",
-        "decoding": "Decoding…",
-        "auto": "Auto", "cmp": "Compare", "be_dsp": "DSP (rules)", "be_ctc": "CTC (neural net)", "be_auto": "Auto (run both)",
-        "play": "▶ Play", "pause": "⏸ Pause", "stop": "⏹ Stop", "reset": "Reset",
-        "ch_only": "Selected channel only", "bw": "BW", "vol": "Vol", "band": "passband",
-        "gate_hint": "Gate: file mode + CTC only (flags suspect chars)",
-        "fix_hint": "Fix: applies to both file and live modes",
-        "live": "Live input", "cap_start": "Start", "cap_stop": "Stop",
-        "cap_save": "Save WAV (≤120s)", "cap_saved": "Saved", "cap_running": "listening", "live_dec": "Live decode", "live_be": "Engine", "fix": "Fix (all)", "gate": "Gate (file/CTC)", "multi": "Multi-CH", "live_click_hint": "Live mode: pick a channel from the list or type Hz", "follow": "Follow",
-        "cap_idle": "idle", "cap_none": "no input device",
-        "stop_hint": "Stopped · text kept (save the recording, then use File mode to decode another frequency)",
-        "cap_stopped": "Stopped · recording keeps the last {sec}s",
-        "dsp_desc": "Rule-based: envelope threshold + dot/dash timing",
-        "ctc_desc": "Neural net: 11-D acoustic features + CTC decoding", "cmp_title": "Backend comparison", "agree": "Agreement",
-        "snr_high": "high", "snr_good": "good", "snr_low": "low", "snr_vlow": "very low",
-        "cand": "Channels", "cand_tip": "quality",
-        "fx_hint": "Hint: Windows audio enhancements are compressing the signal — turn them off in Sound settings",
-        "txtcap": "Decoded text", "alpha": "Alphabet", "alpha_la": "Latin", "alpha_ru": "Cyrillic",
-        "empty_file": "Open a WAV and press Decode, or press Start to listen live",
-        "empty_live": "Waiting for a signal… (text appears after the tone locks)",
-        "txpad": "TX practice", "menu_tools": "Tools", "menu_file": "File",
-        "txpad_title": "CW Transmit Practice",
+        "error": "Error", "hint": "Click the spectrogram, or type a frequency and press Enter", "spectrum": "Spectrogram (x: time s, y: frequency Hz)",
+        "selected": "selected", "go": "Decode", "hz": "Hz",
+        "bad_freq": "Frequency must be 100–3000 Hz", "decoding": "Decoding…", "auto": "Auto",
+        "cmp": "Compare", "be_dsp": "DSP (rules)", "be_ctc": "CTC (neural net)",
+        "be_auto": "Auto (run both)", "play": "▶ Play", "pause": "⏸ Pause",
+        "stop": "⏹ Stop", "reset": "Reset", "ch_only": "Selected channel only",
+        "bw": "BW", "vol": "Vol", "band": "passband",
+        "gate_hint": "Gate: file mode + CTC only (flags suspect chars)", "fix_hint": "Fix: applies to both file and live modes", "live": "Live input",
+        "cap_start": "Start", "cap_stop": "Stop", "cap_save": "Save WAV (≤120s)",
+        "cap_saved": "Saved", "cap_running": "listening", "live_dec": "Live decode",
+        "live_be": "Engine", "fix": "Fix (all)", "multi": "Multi-CH",
+        "live_click_hint": "Live mode: pick a channel from the list or type Hz", "follow": "Follow", "cap_idle": "idle",
+        "cap_none": "no input device", "stop_hint": "Stopped · text kept (save the recording, then use File mode to decode another frequency)", "cap_stopped": "Stopped · recording keeps the last {sec}s",
+        "dsp_desc": "Rule-based: envelope threshold + dot/dash timing", "ctc_desc": "Neural net: 11-D acoustic features + CTC decoding", "cmp_title": "Backend comparison",
+        "agree": "Agreement", "snr_high": "high", "snr_good": "good",
+        "snr_low": "low", "snr_vlow": "very low", "cand": "Channels",
+        "cand_tip": "quality", "fx_hint": "Hint: Windows audio enhancements are compressing the signal — turn them off in Sound settings", "txtcap": "Decoded text",
+        "alpha": "Alphabet", "alpha_la": "Latin", "alpha_ru": "Cyrillic",
+        "empty_file": "Open a WAV and press Decode, or press Start to listen live", "empty_live": "Waiting for a signal… (text appears after the tone locks)", "txpad": "TX practice",
+        "menu_tools": "Tools", "menu_file": "File", "txpad_title": "CW Transmit Practice",
         "txpad_template": "Template", "txpad_call": "Call", "txpad_text": "Text to send",
-        "txpad_tone": "Tone (Hz)", "txpad_wpm": "Speed",
-        "txpad_play": "▶ Play", "txpad_stop": "⏹ Stop", "txpad_save": "💾 Save WAV",
-        "txpad_close": "Close", "txpad_empty": "Type something to send first",
-        "txpad_saved": "Saved to: {path}",
-        "txpad_info": "{chars} chars · {wpm} WPM · {tone} Hz · about {dur} s",
-        "tpl_cq": "CQ CQ CQ DE {call}", "tpl_cq_test": "CQ TEST",
-        "tpl_rst": "Signal report RST", "tpl_73": "TU 73 SK",
-        "tpl_qrl": "QRL? (is this frequency in use)", "tpl_qrz": "QRZ? (who is calling me)",
-        "tpl_info": "NAME / QTH intro", "tpl_pse_k": "PSE K (please go ahead)",
+        "txpad_tone": "Tone (Hz)", "txpad_wpm": "Speed", "txpad_play": "▶ Play",
+        "txpad_stop": "⏹ Stop", "txpad_save": "💾 Save WAV", "txpad_close": "Close",
+        "txpad_empty": "Type something to send first", "txpad_saved": "Saved to: {path}", "txpad_info": "{chars} chars · {wpm} WPM · {tone} Hz · about {dur} s",
+        "tpl_cq": "CQ CQ CQ DE {call}", "tpl_cq_test": "CQ TEST", "tpl_rst": "Signal report RST",
+        "tpl_73": "TU 73 SK", "tpl_qrl": "QRL? (is this frequency in use)", "tpl_qrz": "QRZ? (who is calling me)",
+        "tpl_info": "NAME / QTH intro", "tpl_pse_k": "PSE K (please go ahead)", "col_freq": "Freq Hz",
+        "col_dbfs": "Level dB", "col_wpm": "Speed", "col_call": "Call / excerpt",
+        "q_signal": "Signal", "q_level": "Level", "q_snr": "SNR",
+        "q_ratio": "Timing", "q_decode": "Decode", "q_hold": "(hold)",
+        "q_stopped": "— (stopped)", "q_none": "no", "q_yes": "yes",
+        "q_fix": "fix", "q_lvl_low": "⚠Level", "q_lvl": "Level",
+        "q_good": "ok", "q_suspect": "questionable", "q_bad": "unreliable",
+        "tip_live_title": "Live signal quality (last 10 s)", "tip_stop_title": "Live signal quality (stopped · last update {ts})", "tip_lvl_rule": "≥-28 green · -33~-28 yellow · <-33 red",
+        "tip_snr_rule": "≥18 green · 12~18 yellow · <12 red · ref. BW 180 Hz", "tip_sig_rule": "level > -60 dBFS and tonality ≥ 15 (last 2 s)", "tip_live_foot": "Updated once per second, ~3 s smoothing; colour needs 2 s confirmation; frozen after stop.",
+        "tip_stop_foot": "Values above are the last measurement; cleared on reset.", "tip_file_title": "Signal quality (details)", "tip_ratio_rule": "0.80~1.35 normal · >1.55 reverb stretch · <0.62 chopped",
+        "tip_decode_rule": "text confidence + element regularity", "tip_reg": "share of elements on the 1×/3× grid", "tip_textline": "? {q:.1f}% · single-letter {single:.1f}% · non-ASCII {nonascii:.1f}%",
+        "tip_no_data": "— (no data)", "q_reg": "Reg", "q_text": "Text"
+    },
+    "ru": {
+        "title": "CW декодер", "open": "Открыть WAV", "close_file": "Закрыть",
+        "decode": "Декодировать", "save": "Сохранить текст", "clear": "Очистить",
+        "cyr": "Кириллица", "latin": "Латиница", "gate": "Шлюз (файл/CTC)",
+        "lang": "Язык", "backend": "Движок", "src": "Источник",
+        "tone": "Тон", "wpm": "Скорость", "dur": "Длительность",
+        "elapsed": "Время", "none": "—", "no_file": "Сначала выберите файл WAV",
+        "error": "Ошибка", "hint": "Щёлкните по спектрограмме или введите частоту и нажмите Enter", "spectrum": "Спектрограмма (X: время, с; Y: частота, Гц)",
+        "selected": "выбрано", "go": "Декодировать", "hz": "Гц",
+        "bad_freq": "Частота должна быть в диапазоне 100–3000 Гц", "decoding": "Декодирование…", "auto": "Авто",
+        "cmp": "Сравнить", "be_dsp": "DSP (правила)", "be_ctc": "CTC (нейросеть)",
+        "be_auto": "Авто (оба)", "play": "▶ Пуск", "pause": "⏸ Пауза",
+        "stop": "⏹ Стоп", "reset": "Сброс", "ch_only": "Только выбранный канал",
+        "bw": "Полоса", "vol": "Громк.", "band": "Полоса воспр.",
+        "gate_hint": "Шлюз: только файл + CTC (помечает сомнительные символы)", "fix_hint": "Исправления: работают в файловом и живом режиме", "live": "Живой вход",
+        "cap_start": "Слушать", "cap_stop": "Стоп", "cap_save": "Сохранить WAV (≤120 с)",
+        "cap_saved": "Сохранено", "cap_running": "приём", "live_dec": "Живое декодирование",
+        "live_be": "Движок", "fix": "Исправления (все)", "multi": "Мультиканал",
+        "live_click_hint": "Живой режим: выберите канал в списке или введите Гц", "follow": "Следить за частотой", "fx_hint": "Подсказка: улучшения звука Windows сжимают динамический диапазон — отключите их",
+        "cap_idle": "не слушает", "cap_none": "нет доступного устройства ввода", "stop_hint": "Приём остановлен · текст сохранён (сохраните запись и декодируйте в файловом режиме)",
+        "cap_stopped": "Приём остановлен · запись хранит последние {sec} с", "dsp_desc": "Правила: порог огибающей + длительности точек и тире", "ctc_desc": "Нейросеть: 11 акустических признаков + CTC",
+        "cmp_title": "Сравнение движков", "agree": "Согласие", "snr_high": "высокий",
+        "snr_good": "хороший", "snr_low": "низкий", "snr_vlow": "очень низкий",
+        "cand": "Каналы", "cand_tip": "качество", "txtcap": "Результат",
+        "alpha": "Алфавит", "alpha_la": "Латиница", "alpha_ru": "Кириллица",
+        "empty_file": "Откройте WAV и нажмите «Декодировать» или «Слушать»", "empty_live": "Ожидание сигнала… (текст появится после захвата тона)", "txpad": "Передача",
+        "menu_tools": "Инструменты", "menu_file": "Файл", "txpad_title": "Тренажёр передачи CW",
+        "txpad_template": "Шаблон", "txpad_call": "Позывной", "txpad_text": "Текст для передачи",
+        "txpad_tone": "Тон (Гц)", "txpad_wpm": "Скорость", "txpad_play": "▶ Пуск",
+        "txpad_stop": "⏹ Стоп", "txpad_save": "💾 Сохранить WAV", "txpad_close": "Закрыть",
+        "txpad_empty": "Сначала введите текст", "txpad_saved": "Сохранено: {path}", "txpad_info": "{chars} симв. · {wpm} WPM · {tone} Гц · около {dur} с",
+        "tpl_cq": "CQ CQ CQ DE {call}", "tpl_cq_test": "CQ TEST", "tpl_rst": "Отчёт RST",
+        "tpl_73": "TU 73 SK", "tpl_qrl": "QRL? (частота занята?)", "tpl_qrz": "QRZ? (кто меня зовёт?)",
+        "tpl_info": "ИМЯ / QTH", "tpl_pse_k": "PSE K (продолжайте)", "col_freq": "Частота, Гц",
+        "col_dbfs": "Уровень, дБ", "col_wpm": "Скорость", "col_call": "Позывной / фрагмент",
+        "q_signal": "Сигнал", "q_level": "Уровень", "q_snr": "SNR",
+        "q_ratio": "Тайминг", "q_decode": "Декод", "q_hold": "(удерж.)",
+        "q_stopped": "— (остановлено)", "q_none": "нет", "q_yes": "есть",
+        "q_fix": "испр.", "q_lvl_low": "⚠Уровень", "q_lvl": "Уровень",
+        "q_good": "достоверно", "q_suspect": "сомнительно", "q_bad": "недостоверно",
+        "tip_live_title": "Качество сигнала (последние 10 с)", "tip_stop_title": "Качество сигнала (остановлено · обновлено {ts})", "tip_lvl_rule": "≥-28 зелёный · -33~-28 жёлтый · <-33 красный",
+        "tip_snr_rule": "≥18 зелёный · 12~18 жёлтый · <12 красный · полоса 180 Гц", "tip_sig_rule": "уровень > -60 dBFS и тональность ≥ 15 (последние 2 с)", "tip_live_foot": "Обновление раз в секунду, сглаживание ~3 с; цвет — после 2 с подтверждения; после остановки значения фиксируются.",
+        "tip_stop_foot": "Выше — последние значения; сбрасываются кнопкой «Сброс».", "tip_file_title": "Качество сигнала (подробно)", "tip_ratio_rule": "0.80~1.35 норма · >1.55 растяжение · <0.62 дробление",
+        "tip_decode_rule": "достоверность текста + регулярность элементов", "tip_reg": "доля элементов на сетке 1×/3×", "tip_textline": "? {q:.1f}% · одиночных {single:.1f}% · не-ASCII {nonascii:.1f}%",
+        "tip_no_data": "— (нет данных)", "q_reg": "Регул.", "q_text": "Текст"
     },
 }
 
 F_MIN, F_MAX = 200.0, 1600.0
-MARGIN_L, MARGIN_B, MARGIN_T, MARGIN_R = 52, 14, 10, 10
+MARGIN_L, MARGIN_B, MARGIN_T, MARGIN_R = 52, 26, 10, 10
 
 
 def _lut() -> np.ndarray:
@@ -338,6 +392,48 @@ def _pick_out_dir(base: str | None = None) -> str:
         return alt
 
 
+
+_ERR_LOG_MAX = 256 * 1024      # 日志上限 256 KB，超出自动截断（只留后半段）
+_ERR_LOG_LAST: dict[str, float] = {}   # 同一条错误 60 秒内只记一次，避免刷屏
+
+
+def _ui_err_log(msg: str) -> None:
+    """把界面层的异常写进日志，便于排查。
+
+    · 位置：%LOCALAPPDATA%\\CWDecoder\\ui_errors.log（每个用户各自一份）
+    · 只记录异常堆栈，不记录音频、文本或任何用户输入
+    · 单条错误 60 秒内重复出现只记一次；文件超过 256 KB 自动截断
+    · 任何情况下都不会抛错（记录失败就放弃）
+    """
+    try:
+        import os, time
+        # 限流键：整条内容（截 200 字符）。同一函数下的不同错误仍会分别记录
+        key = (msg or "").strip()[:200] or "?"
+        now = time.time()
+        if now - _ERR_LOG_LAST.get(key, 0.0) < 60.0:
+            return
+        _ERR_LOG_LAST[key] = now
+        if len(_ERR_LOG_LAST) > 200:
+            _ERR_LOG_LAST.clear()
+
+        base = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
+        d = os.path.join(base, "CWDecoder")
+        os.makedirs(d, exist_ok=True)
+        path = os.path.join(d, "ui_errors.log")
+        try:
+            if os.path.exists(path) and os.path.getsize(path) > _ERR_LOG_MAX:
+                with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                    tail = f.read()[-_ERR_LOG_MAX // 2:]
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write("（日志超过上限，已截断）\n" + tail)
+        except Exception:
+            pass
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(f"\n===== {time.strftime('%Y-%m-%d %H:%M:%S')} =====\n{msg}\n")
+    except Exception:
+        pass
+
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -385,12 +481,16 @@ class App(tk.Tk):
 
         wa_w = max(600, wa_right - wa_left)
         wa_h = max(400, wa_bottom - wa_top)
+        # 默认尺寸（用于还原时的大小），随后最大化铺满工作区
         w = min(1380, wa_w - 24)
         h = min(790, wa_h - 46)
         x = wa_left + (wa_w - w) // 2
         y = wa_top + max(0, (wa_h - h) // 2 - 10)
         self.geometry(f"{w}x{h}+{x}+{y}")
-        self.minsize(min(1360, w), min(640, h))
+        self.minsize(min(1200, wa_w - 20), min(640, wa_h - 40))
+        self._work_area = (wa_left, wa_top, wa_w, wa_h)
+        # 启动后铺满工作区（最大化，保留任务栏）
+        self.after(0, self._maximize_start)
 
         # 再按"实际窗口底边"校正一次（标题栏/边框会额外占高度）
         try:
@@ -411,7 +511,26 @@ class App(tk.Tk):
 
     # ------------------------------------------------------------ helpers
     def t(self, key: str) -> str:
-        return STRINGS[self.lang][key]
+        d = STRINGS.get(self.lang) or STRINGS["en"]
+        return d.get(key) or STRINGS["en"].get(key) or key
+
+    def _maximize_start(self):
+        """启动时铺满工作区（不覆盖任务栏）。
+
+        优先用 Windows 的 zoomed 状态（系统会自己避开任务栏）；
+        若当前 Tk 不支持，则按工作区矩形铺满。
+        """
+        try:
+            self.state("zoomed")
+            return
+        except Exception:
+            pass
+        try:
+            wa_left, wa_top, wa_w, wa_h = getattr(self, "_work_area", (0, 0, 0, 0))
+            if wa_w > 0 and wa_h > 0:
+                self.geometry(f"{wa_w}x{wa_h}+{wa_left}+{wa_top}")
+        except Exception:
+            pass
 
     def _build(self):
         self.title(self.t("title"))
@@ -463,7 +582,7 @@ class App(tk.Tk):
         self.lbl_lang = ttk.Label(self.tail, text=self.t("lang"))
         self.lbl_lang.pack(side="left", padx=(0, 6))
         self.cmb_lang = ttk.Combobox(self.tail, textvariable=self.lang_var, width=6,
-                                     values=["中文", "English"], state="readonly")
+                                     values=["中文", "English", "Русский"], state="readonly")
         self.cmb_lang.pack(side="left")
         self.cmb_lang.bind("<<ComboboxSelected>>", self.on_lang)
 
@@ -576,7 +695,7 @@ class App(tk.Tk):
 
         # ---- 频谱 ----
         spec_frame = ttk.Frame(self, padding=(12, 4, 12, 2))
-        spec_frame.pack(fill="x")
+        spec_frame.pack(fill="both", expand=True)
         head = ttk.Frame(spec_frame)
         head.pack(fill="x")
         self.btn_reset = ttk.Button(head, text=self.t("reset"), width=6, command=self.reset_view)
@@ -589,14 +708,14 @@ class App(tk.Tk):
         self.lbl_hz = ttk.Label(head, text=self.t("hz"))
         self.lbl_hz.pack(side="right", padx=(0, 4))
         row = tk.Frame(spec_frame, background="#0f1216")
-        row.pack(fill="x", pady=(4, 0))
+        row.pack(fill="both", expand=True, pady=(4, 0))
         self.vs = VerticalSlider(row, width=18, minimum=50, maximum=3500,
                                  command=self.on_vscroll)
         self.vs.place(x=0, y=MARGIN_T, width=18, height=200)
         self._sync_guard = False
         self.canvas = tk.Canvas(row, height=238, background="#0f1216",
                                 highlightthickness=0, borderwidth=0)
-        self.canvas.pack(side="left", fill="x", expand=True, anchor="n", padx=(18, 0))
+        self.canvas.pack(side="left", fill="both", expand=True, anchor="n", padx=(18, 0))
         self.canvas.bind("<Button-1>", self.on_canvas_click)
         self.canvas.bind("<Configure>", self._on_canvas_configure)
         self.canvas.bind("<MouseWheel>", self.on_wheel)
@@ -641,10 +760,11 @@ class App(tk.Tk):
         self.mc_tree = ttk.Treeview(self.mc_frame,
                                     columns=("freq", "lvl", "wpm", "call"),
                                     show="headings", height=3)
-        self.mc_tree.heading("freq", text="频率 Hz")
-        self.mc_tree.heading("lvl", text="强度 dB")
-        self.mc_tree.heading("wpm", text="速度")
-        self.mc_tree.heading("call", text="呼号 / 片段")
+        self.mc_tree.heading("freq", text=self.t("col_freq"))
+        self.mc_tree.heading("freq", text=self.t("col_freq"))
+        self.mc_tree.heading("lvl", text=self.t("col_dbfs"))
+        self.mc_tree.heading("wpm", text=self.t("col_wpm"))
+        self.mc_tree.heading("call", text=self.t("col_call"))
         self.mc_tree.column("freq", width=90, anchor="w")
         self.mc_tree.column("lvl", width=70, anchor="w")
         self.mc_tree.column("wpm", width=60, anchor="w")
@@ -703,14 +823,37 @@ class App(tk.Tk):
         self.status = tk.Label(bar, text=self.t("hint"), anchor="w", padx=12, pady=7,
                                background="#f0f0f0", foreground="#222222")
         self.status.pack(side="left")
-        self.lbl_alpha = tk.Label(bar, text="", anchor="e", padx=8, pady=6,
+
+        # 右侧统一容器：质量指示灯 / suspect / 字母表 依次排列，
+        # 避免它们各自 side="right" 时互相挤压或重叠
+        self.right_bar = tk.Frame(bar, background="#f0f0f0")
+        self.right_bar.pack(side="right", padx=(0, 6))
+
+        # 信号质量指示灯：4 个独立 Label，各自着色（绿/黄/红）
+        self.quality_frame = tk.Frame(self.right_bar, background="#f0f0f0")
+        self.q_labels = {}
+        for key in ("signal", "level", "snr", "ratio", "decode"):
+            lb = tk.Label(self.quality_frame, text="", background="#f0f0f0",
+                          foreground="#8a9aab", font=("Consolas", 9))
+            lb.pack(side="left", padx=(0, 8))
+            self.q_labels[key] = lb
+        # "（保持）"小标记：只在停止监听后显示，贴在"信号"灯后面
+        self.lbl_hold = tk.Label(self.quality_frame, text=self.t("q_hold"), background="#f0f0f0",
+                                 foreground="#8a9aab", font=("Microsoft YaHei", 7))
+        self._q_tip = None
+        for lb in self.q_labels.values():
+            lb.bind("<Enter>", self._show_quality_tip)
+            lb.bind("<Leave>", self._hide_quality_tip)
+
+        self.lbl_suspect = tk.Label(self.right_bar, text="", anchor="e", padx=8, pady=6,
+                                    background="#f0f0f0", foreground="#cc0000",
+                                    font=("Segoe UI", 9, "bold"))
+        self.lbl_suspect.pack(side="left")
+
+        self.lbl_alpha = tk.Label(self.right_bar, text="", anchor="e", padx=8, pady=6,
                                   background="#f0f0f0", foreground="#5f7186",
                                   font=("Segoe UI", 9))
-        self.lbl_alpha.pack(side="right", padx=(0, 6))
-        self.lbl_suspect = tk.Label(bar, text="", anchor="e", padx=10, pady=6,
-                                    background="#f0f0f0", foreground="#cc0000",
-                                    font=("Segoe UI", 10, "bold"))
-        self.lbl_suspect.pack(side="right")
+        self.lbl_alpha.pack(side="left", padx=(0, 4))
 
         self._play_enabled = False
         self._set_play_enabled(False)
@@ -739,6 +882,12 @@ class App(tk.Tk):
         self.destroy()
 
     def _on_canvas_configure(self, _evt=None):
+        # 竖向滑块的高度跟随画布（窗口变大时一起变长）
+        try:
+            h = max(60, self.canvas.winfo_height() - MARGIN_T - MARGIN_B)
+            self.vs.place_configure(y=MARGIN_T, width=18, height=h)
+        except Exception:
+            pass
         if getattr(self, "_wf_mode", False) and self._wf is not None:
             cw = max(200, self.canvas.winfo_width())
             ch = max(120, self.canvas.winfo_height())
@@ -804,12 +953,16 @@ class App(tk.Tk):
         except Exception:
             span = 30.0
         ticks = ((0.0, f"-{span:.0f}"), (0.5, f"-{span/2:.0f}"), (1.0, "0"))
+        ch = self.canvas.winfo_height()
+        y_tick = min(y0 + ph + 8, ch - 14)          # 防止数字被画布裁掉
         for frac, label in ticks:
             x = x0 + frac * pw
             self.canvas.create_line(x, y0 + ph, x, y0 + ph + 4, fill="#8fa3bf", tags="axis")
-            self.canvas.create_text(x, y0 + ph + 8, anchor="n", fill="#9fb3c8",
-                                    text=label, font=("Consolas", 9), tags="axis")
-        self.canvas.create_text(x0 + pw, y0 + ph + 20, anchor="e", fill="#6f8499",
+            # 最后一个刻度右对齐，给单位" s"留出位置，避免压字
+            self.canvas.create_text(x, y_tick, anchor="e" if frac >= 1.0 else "n",
+                                    fill="#9fb3c8", text=label,
+                                    font=("Consolas", 9), tags="axis")
+        self.canvas.create_text(x0 + pw + 2, y_tick, anchor="nw", fill="#6f8499",
                                 text="s", font=("Consolas", 8), tags="axis")
         self._align_vslider()
 
@@ -824,25 +977,10 @@ class App(tk.Tk):
                 pass
         self._wf_job = self.after(66, self._wf_tick)
 
-    def _wf_stop(self):
-        self._wf_mode = False
-        self._wf_frozen = False
-        self.tracker: ChannelTracker | None = None
-        self._mc_last = 0.0
-        self._mc_busy = False
-        self._mc_q: queue.Queue = queue.Queue()
-        if self._wf_job:
-            try:
-                self.after_cancel(self._wf_job)
-            except Exception:
-                pass
-            self._wf_job = None
-        self._wf = None
-        self._wf_item = None
-
 
 
     def on_close_file(self):
+        self._clear_quality()
         """关闭当前文件，恢复到"什么都没打开"的空白状态。"""
         try:
             self._player.stop()
@@ -1015,83 +1153,6 @@ class App(tk.Tk):
                 return s2["id"]
         return None
 
-    def on_cap_start(self):
-        sid = self._src_id()
-        if not sid:
-            messagebox.showinfo(self.t("title"), self.t("cap_none"))
-            return
-        # 实时模式与文件模式彻底隔离：先关掉已打开的文件
-        if self.path:
-            self.on_close_file()
-        self.capture.clear()
-        self._live_pending: list[np.ndarray] = []
-        # 每次开始监听都清掉上一次的音调历史，避免"沿用上一次的频率"
-        self._tone_hist = []
-        self._live_last_retune = 0.0
-        self._cand_tone, self._cand_n = 0.0, 0
-        self._last_len, self._last_grow = 0, time.time()
-        if self.live_var.get():
-            self._set_text("")
-            self._live_raw = ""
-            self._live_prefix = ""
-            # 清掉文件模式遗留的频道与选区，避免影响实时
-            self.selected_hz = None
-            self._tone_manual = False
-            self._cands = []
-            for w in list(self.cand_bar.winfo_children()):
-                if w is not self.lbl_cand:
-                    w.destroy()
-            self._cands = []
-            self.lbl_cap.configure(text=self.t("cap_running"))
-            if self.selected_hz:
-                self.stream_dec = WindowDecoder(
-                    f0=self.selected_hz,
-                    on_update=lambda b, a: self._live_q.put((b, a)),
-                    on_tone=lambda f: self.after(0, lambda: self.status.configure(
-                        text=f"{self.t('tone')}: {f:.1f} Hz")),
-                    src_rate=self.capture.rate or 48000,
-                    backend=self._live_backend(), fix_text=False,
-                    alphabet=getattr(self, "alphabet", "latin"))
-                self.stream_dec.start()
-                self._live_tone_done = True
-            else:
-                self.stream_dec = None      # 等自动估出音调后再建解码器
-                self._live_tone_done = False
-        else:
-            self.stream_dec = None
-        self._tone_manual = False
-        self.capture.on_block = self._on_capture_block
-        self._show_stop_hint(False)
-        ok = self.capture.start(sid)
-        try:
-            self._update_empty_hint()
-            self._sync_channel_panels()
-        except Exception:
-            pass
-        if ok and self.stream_dec is not None:
-            # 采集启动后才能知道真实采样率（48k），必须同步给解码器
-            self.stream_dec.src_rate = self.capture.rate or 48000
-        if not ok:
-            messagebox.showerror(self.t("error"), self.capture.error or "")
-            return
-        self.btn_cap_start.configure(state="disabled")
-        self.btn_cap_stop.configure(state="normal")
-        self.btn_cap_save.configure(state="normal")
-        self.cmb_src.configure(state="disabled")
-        if self.mc_var.get():
-            self.tracker = ChannelTracker()
-            self._on_mc_toggle()
-        else:
-            self.tracker = None
-        self._mc_last = 0.0
-        self._mc_busy = False
-        self._mc_q: queue.Queue = queue.Queue()
-        self._tick_job = None
-        self._tick_capture()
-        if self.live_var.get():
-            self._wf_start()
-            self.after(80, self._live_poll)
-
     def _live_poll(self):
         """定时器回调：刷新文本 + 自动音调。任何分支都必须重新排程。"""
         self._drain_live()
@@ -1166,7 +1227,8 @@ class App(tk.Tk):
                                     self.status.configure(
                                         text=f"{self.t('tone')}: {f0:.1f} Hz")
                             except Exception:
-                                pass
+                                import traceback
+                                _ui_err_log("[_live_poll]\n" + traceback.format_exc())
                         self._live_last_retune = time.time()
                         # 只有真的建好解码器才算"锁定"，否则下次还要继续估
                         if self.stream_dec is not None:
@@ -1263,96 +1325,21 @@ class App(tk.Tk):
                         if contrast < 11.0:
                             self.status.configure(text=self.t("fx_hint"))
             except Exception:
-                pass
+                import traceback
+                _ui_err_log("[_live_poll]\n" + traceback.format_exc())
 
         if self.tracker is not None and time.time() - self._mc_last >= 2.0:
             self._mc_last = time.time()
             try:
                 self._mc_update()
             except Exception:
-                pass
+                import traceback
+                _ui_err_log("[_live_poll]\n" + traceback.format_exc())
 
         if self.capture.running:
             self.after(80, self._live_poll)
         else:
             self._drain_live()
-
-    def on_cap_stop(self):
-        self.capture.stop()
-        self.tracker = None
-        try:
-            self._sync_channel_panels()
-        except Exception:
-            pass
-        if self.stream_dec is not None:
-            try:
-                self.stream_dec.stop()
-                self.stream_dec.flush()
-            except Exception:
-                pass
-            self._drain_live()
-            self.stream_dec = None
-        self.capture.on_block = None
-        # 冻结当前瀑布画面（不立刻切回静态频谱）
-        if self._wf_job:
-            try:
-                self.after_cancel(self._wf_job)
-            except Exception:
-                pass
-            self._wf_job = None
-        self._wf_frozen = getattr(self, "_wf_mode", False)
-        # 回到文件模式：重新生成频道按钮
-        if self.path and self._y8k is not None:
-            try:
-                probe = self._y8k[: 45 * 8000] if len(self._y8k) > 45 * 8000 else self._y8k
-                self._cands = detect_candidates(self._spec[0], self._spec[1], audio=probe)
-                self._build_candidate_bar()
-            except Exception:
-                pass
-        self.btn_cap_start.configure(state="normal")
-        self.btn_cap_stop.configure(state="disabled")
-        self.cmb_src.configure(state="readonly")
-        self.lbl_cap.configure(text=f"{self.t('cap_idle')}  "
-                                    f"{len(self.capture.snapshot())/8000:.1f} s")
-        # 停下后给一句说明：文本保留、录音只有最近 N 秒、要重解请用文件模式
-        try:
-            secs = int(len(self.capture.snapshot8k()) / 8000.0)
-            self.status.configure(text=self.t("cap_stopped").format(sec=secs))
-        except Exception:
-            pass
-        self._show_stop_hint(True)
-
-    def on_cap_save(self):
-        y = self.capture.snapshot()
-        if len(y) == 0:
-            return
-        path = filedialog.asksaveasfilename(defaultextension=".wav",
-                                            filetypes=[("WAV", "*.wav")])
-        if not path:
-            return
-        dur = self.capture.save_wav(path)
-        self.lbl_cap.configure(text=f"{self.t('cap_saved')}: {dur:.1f} s")
-        self.status.configure(text=f"{self.t('cap_saved')}: {dur:.1f} s")
-
-    def _live_backend(self) -> str:
-        return "ctc" if self.live_be_var.get() == "CTC" else "dsp"
-
-    def _wf_feed(self, y):
-        if self._wf is not None and self._wf_mode:
-            try:
-                self._wf.feed(y, self.capture.rate or 48000)
-            except Exception:
-                pass
-
-    def _on_capture_block(self, y):
-        self._wf_feed(y)
-        """采集线程回调：音调未知时先缓存，已知时直接解码。"""
-        if self.stream_dec is not None:
-            self.stream_dec.feed(y)
-        else:
-            self._live_pending.append(y)
-            if sum(len(b) for b in self._live_pending) > 30 * 8000:
-                self._live_pending.pop(0)
 
     @staticmethod
     def _wrap_live(text: str, width: int = 78) -> str:
@@ -1397,26 +1384,8 @@ class App(tk.Tk):
         self._shown_cache = shown
         self._update_empty_hint()
 
-    def _drain_live(self):
-        items = []
-        while True:
-            try:
-                items.append(self._live_q.get_nowait())
-            except queue.Empty:
-                break
-        if not items:
-            return
-        for back, add in items:
-            if back > 0:
-                self._live_raw = self._live_raw[: max(0, len(self._live_raw) - back)]
-            if add:
-                self._live_raw += add
-
-        shown = self._live_prefix + self._live_shown(self._live_raw)
-
-        self._live_render(shown)
-
     def on_cap_start(self):
+        self._clear_live_state()       # 每次开始监听都从干净状态起步
         sid = self._src_id()
         if not sid:
             messagebox.showinfo(self.t("title"), self.t("cap_none"))
@@ -1494,18 +1463,40 @@ class App(tk.Tk):
             self.after(80, self._live_poll)
 
     def on_cap_stop(self):
+        was = getattr(self, "_live_snapshot", None)
         self.capture.stop()
+        # 灯改为"已停止"并保留数值（复位时才清空）
+        if self.quality_frame.winfo_manager() and any(
+                self.q_labels[k].cget("text") for k in ("level", "snr")):
+            self._q_color["signal"] = "off"
+            self._q_pending["signal"] = None
+            self.q_labels["signal"].configure(
+                text="● " + self.t("q_signal") + " " + self.t("q_stopped"),
+                foreground=self.Q_COLORS["off"])
+            try:
+                self.lbl_hold.pack(side="left", padx=(0, 8), after=self.q_labels["signal"])
+            except Exception:
+                import traceback
+                _ui_err_log("[on_cap_stop]\n" + traceback.format_exc())
+            self._live_snapshot = dict(
+                level=(was or {}).get("level", getattr(self, "_q_ema", {}).get("level")),
+                snr=(was or {}).get("snr", getattr(self, "_q_ema", {}).get("snr")),
+                signal="—（已停止）",
+                ts=(was or {}).get("ts", time.time()),
+                state="stopped")
         self.tracker = None
         try:
             self._sync_channel_panels()
         except Exception:
-            pass
+            import traceback
+            _ui_err_log("[on_cap_stop]\n" + traceback.format_exc())
         if self.stream_dec is not None:
             try:
                 self.stream_dec.stop()
                 self.stream_dec.flush()
             except Exception:
-                pass
+                import traceback
+                _ui_err_log("[on_cap_stop]\n" + traceback.format_exc())
             self._drain_live()
             self.stream_dec = None
         self.capture.on_block = None
@@ -1514,7 +1505,8 @@ class App(tk.Tk):
             try:
                 self.after_cancel(self._wf_job)
             except Exception:
-                pass
+                import traceback
+                _ui_err_log("[on_cap_stop]\n" + traceback.format_exc())
             self._wf_job = None
         self._wf_frozen = getattr(self, "_wf_mode", False)
         # 回到文件模式：重新生成频道按钮
@@ -1524,7 +1516,8 @@ class App(tk.Tk):
                 self._cands = detect_candidates(self._spec[0], self._spec[1], audio=probe)
                 self._build_candidate_bar()
             except Exception:
-                pass
+                import traceback
+                _ui_err_log("[on_cap_stop]\n" + traceback.format_exc())
         self.btn_cap_start.configure(state="normal")
         self.btn_cap_stop.configure(state="disabled")
         self.cmb_src.configure(state="readonly")
@@ -1535,7 +1528,8 @@ class App(tk.Tk):
             secs = int(len(self.capture.snapshot8k()) / 8000.0)
             self.status.configure(text=self.t("cap_stopped").format(sec=secs))
         except Exception:
-            pass
+            import traceback
+            _ui_err_log("[on_cap_stop]\n" + traceback.format_exc())
         self._show_stop_hint(True)
 
     def on_cap_save(self):
@@ -1558,103 +1552,8 @@ class App(tk.Tk):
             try:
                 self._wf.feed(y, self.capture.rate or 48000)
             except Exception:
-                pass
-
-    def _on_capture_block(self, y):
-        self._wf_feed(y)
-        """采集线程回调：音调未知时先缓存，已知时直接解码。"""
-        if self.stream_dec is not None:
-            self.stream_dec.feed(y)
-        else:
-            self._live_pending.append(y)
-            if sum(len(b) for b in self._live_pending) > 30 * 8000:
-                self._live_pending.pop(0)
-
-    def _drain_live(self):
-        items = []
-        while True:
-            try:
-                items.append(self._live_q.get_nowait())
-            except queue.Empty:
-                break
-        if not items:
-            return
-        for back, add in items:
-            if back > 0:
-                self._live_raw = self._live_raw[: max(0, len(self._live_raw) - back)]
-            if add:
-                self._live_raw += add
-
-        shown = self._live_prefix + self._live_shown(self._live_raw)
-
-        self._live_render(shown)
-
-    def on_cap_stop(self):
-        self.capture.stop()
-        self.tracker = None
-        try:
-            self._sync_channel_panels()
-        except Exception:
-            pass
-        if self.stream_dec is not None:
-            try:
-                self.stream_dec.stop()
-                self.stream_dec.flush()
-            except Exception:
-                pass
-            self._drain_live()
-            self.stream_dec = None
-        self.capture.on_block = None
-        # 冻结当前瀑布画面（不立刻切回静态频谱）
-        if self._wf_job:
-            try:
-                self.after_cancel(self._wf_job)
-            except Exception:
-                pass
-            self._wf_job = None
-        self._wf_frozen = getattr(self, "_wf_mode", False)
-        # 回到文件模式：重新生成频道按钮
-        if self.path and self._y8k is not None:
-            try:
-                probe = self._y8k[: 45 * 8000] if len(self._y8k) > 45 * 8000 else self._y8k
-                self._cands = detect_candidates(self._spec[0], self._spec[1], audio=probe)
-                self._build_candidate_bar()
-            except Exception:
-                pass
-        self.btn_cap_start.configure(state="normal")
-        self.btn_cap_stop.configure(state="disabled")
-        self.cmb_src.configure(state="readonly")
-        self.lbl_cap.configure(text=f"{self.t('cap_idle')}  "
-                                    f"{len(self.capture.snapshot())/8000:.1f} s")
-        # 停下后给一句说明：文本保留、录音只有最近 N 秒、要重解请用文件模式
-        try:
-            secs = int(len(self.capture.snapshot8k()) / 8000.0)
-            self.status.configure(text=self.t("cap_stopped").format(sec=secs))
-        except Exception:
-            pass
-        self._show_stop_hint(True)
-
-    def on_cap_save(self):
-        y = self.capture.snapshot()
-        if len(y) == 0:
-            return
-        path = filedialog.asksaveasfilename(defaultextension=".wav",
-                                            filetypes=[("WAV", "*.wav")])
-        if not path:
-            return
-        dur = self.capture.save_wav(path)
-        self.lbl_cap.configure(text=f"{self.t('cap_saved')}: {dur:.1f} s")
-        self.status.configure(text=f"{self.t('cap_saved')}: {dur:.1f} s")
-
-    def _live_backend(self) -> str:
-        return "ctc" if self.live_be_var.get() == "CTC" else "dsp"
-
-    def _wf_feed(self, y):
-        if self._wf is not None and self._wf_mode:
-            try:
-                self._wf.feed(y, self.capture.rate or 48000)
-            except Exception:
-                pass
+                import traceback
+                _ui_err_log("[_wf_feed]\n" + traceback.format_exc())
 
     def _on_capture_block(self, y):
         self._wf_feed(y)
@@ -1712,10 +1611,40 @@ class App(tk.Tk):
                 extra = f"  {wpm:4.1f} WPM"
         if q:
             extra += f"  ?x{q}"
+        # 实时模式：把输入电平也显示出来（只读提示，便于判断麦克风条件）
+        try:
+            lv = getattr(self.capture, "level_db", None)
+            if isinstance(lv, (int, float)) and lv > -120:
+                # 实时数值做 ~3 秒滑动平均，避免每 hop 跳动
+                hist = getattr(self, "_lvl_hist", None)
+                if hist is None:
+                    hist = []
+                    self._lvl_hist = hist
+                now = time.time()
+                hist.append((now, float(lv)))
+                while hist and now - hist[0][0] > 3.0:
+                    hist.pop(0)
+                avg = sum(v for _, v in hist) / max(1, len(hist))
+                if avg < -33:
+                    extra += f"  {self.t('q_lvl_low')} {avg:.0f}dB"
+                elif avg < -28:
+                    extra += f"  {self.t('q_lvl')} {avg:.0f}dB"
+        except Exception:
+            pass
         nfix = getattr(self.stream_dec, "corrections", 0) if self.stream_dec is not None else 0
         if nfix:
-            extra += f"  纠错 {nfix}"
+            extra += f"  {self.t('q_fix')} {nfix}"
         self.lbl_cap.configure(text=f"{self.t('cap_running')}  {db:5.1f} dBFS  {dur:5.1f} s{extra}")
+
+        # 实时三灯：每 1 秒刷新一次（与解码 hop 解耦）
+        try:
+            if time.time() - getattr(self, "_q_ui_ts", 0.0) >= 1.0:
+                self._q_ui_ts = time.time()
+                self._update_live_quality()
+        except Exception:
+            import traceback
+            _ui_err_log("[_update_live_quality]\n" + traceback.format_exc())
+
         self.after(100, self._tick_capture)
 
     # ------------------------------------------------------------ playback
@@ -1900,13 +1829,6 @@ class App(tk.Tk):
         self.timeline.create_text(tl + twidth, 8, anchor="e", text="s", fill="#6f8499",
                                   font=("Consolas", 8))
 
-    @staticmethod
-    def _time_step(dur: float) -> float:
-        for step in (0.5, 1, 2, 5, 10, 20, 30, 60, 120, 300):
-            if dur / step <= 12:
-                return float(step)
-        return 600.0
-
     # ------------------------------------------------------------ spectrum
     def _compute_spectrum(self, x: np.ndarray):
         n_fft, hop = 512, 160
@@ -1984,6 +1906,7 @@ class App(tk.Tk):
             self._sync_guard = False
 
     def reset_view(self, _evt=None):
+        self._clear_quality()
         """复位：视图位置 + 画面内容 + 文本 + 选中频率 一起清空。"""
         self.view = {"f0": F_MIN, "f1": F_MAX, "t0": 0.0, "t1": max(0.01, self.duration)}
         self._set_text("")
@@ -2262,10 +2185,6 @@ class App(tk.Tk):
 
 
     # ------------------------------------------------------------ busy hint
-    def _start_busy(self):
-        self.config(cursor="watch")
-        self._busy_win = None
-        self._busy_job = self.after(180, self._show_busy)
 
     def _show_busy(self):
         self._busy_job = None
@@ -2303,14 +2222,26 @@ class App(tk.Tk):
 
     # ------------------------------------------------------------ actions
     def on_lang(self, _evt=None):
-        self.lang = "en" if self.lang_var.get() == "English" else "zh"
+        self.lang = {"English": "en", "Русский": "ru"}.get(self.lang_var.get(), "zh")
         self.title(self.t("title"))
-        for w, key in ((self.btn_open, "open"), (self.btn_decode, "decode"),
-                       (self.btn_save, "save"), (self.btn_clear, "clear"),
-                       (self.lbl_lang, "lang"), (self.lbl_spec, "spectrum"),
-                       (self.lbl_hz, "hz"), (self.lbl_be, "backend"),
-                       (self.lbl_cand, "cand")):
-            w.configure(text=self.t(key))
+        # 统一刷新所有带静态文案的控件（新增控件请加进这张表）
+        _WIDGET_KEYS = (
+            ("btn_open", "open"), ("btn_close_file", "close_file"),
+            ("btn_decode", "decode"), ("btn_save", "save"), ("btn_clear", "clear"),
+            ("btn_tx", "txpad"), ("lbl_lang", "lang"), ("lbl_spec", "spectrum"),
+            ("lbl_hz", "hz"), ("lbl_be", "backend"), ("lbl_cand", "cand"),
+            ("btn_cap_start", "cap_start"), ("btn_cap_stop", "cap_stop"),
+            ("btn_cap_save", "cap_save"), ("chk_mc", "multi"),
+            ("chk_follow", "follow"), ("chk_live", "live_dec"),
+            ("btn_reset", "reset"), ("btn_stop", "stop"), ("chk_ch", "ch_only"),
+        )
+        for attr, key in _WIDGET_KEYS:
+            w = getattr(self, attr, None)
+            if w is not None:
+                try:
+                    w.configure(text=self.t(key))
+                except Exception:
+                    pass
         self.btn_cyr.configure(text=self.t("latin") if self.show_cyr else self.t("cyr"))
         self._update_alpha_label()
         self.chk_gate.configure(text=self.t("gate"))
@@ -2327,6 +2258,24 @@ class App(tk.Tk):
             self._update_empty_hint()          # 切换语言后刷新空状态文案
         if hasattr(self, "lbl_stop_hint"):
             self._show_stop_hint(self.lbl_stop_hint.winfo_manager() == "pack")
+        try:
+            self.mc_tree.heading("freq", text=self.t("col_freq"))
+            self.mc_tree.heading("lvl", text=self.t("col_dbfs"))
+            self.mc_tree.heading("wpm", text=self.t("col_wpm"))
+            self.mc_tree.heading("call", text=self.t("col_call"))
+            self.lbl_hold.configure(text=self.t("q_hold"))
+        except Exception:
+            pass
+        # 状态栏与实时电平提示也跟随语言
+        try:
+            self.status.configure(text=self.t("hint"))
+        except Exception:
+            pass
+        try:
+            self.lbl_cap.configure(text=self.t("cap_stopped").format(sec=120)
+                                   if self.capture.running else self.t("cap_idle"))
+        except Exception:
+            pass
 
     def _selected_backend(self) -> str:
         sel = self.be_var.get()
@@ -2367,6 +2316,7 @@ class App(tk.Tk):
             self._wf_job = None
         self.path = path
         self.selected_hz = None
+        self._clear_quality()          # 换文件时先清空上一次的指示灯
         self._refresh_src()
 
         x, sr = dsp.read_wav(path)
@@ -2529,6 +2479,418 @@ class App(tk.Tk):
             self.lbl_empty.place(relx=0.5, rely=0.86, anchor="center")
             self._show_empty_art(True)
 
+
+    # ---------- 实时信号质量（滚动窗口 + 平滑 + 迟滞） ----------
+    LIVE_METRICS_EVERY = 1.0
+    _live_snapshot = None          # 最后一帧实时数据（停止后供悬浮提示使用）      # 每 1 秒算一次（不跟 hop 走）
+    LIVE_WINDOW_S = 10.0          # 只看最近 10 秒（会话越长，历史越不相关）
+    LIVE_TAU_S = 3.0              # EMA 时间常数
+    LIVE_CONFIRM = 2              # 颜色变化需连续 2 次确认（迟滞，防闪）
+
+    def _live_metrics(self):
+        """取最近 10 秒音频，算 电平 / SNR / 音调性（只读，不影响解码）。"""
+        try:
+            buf = self.capture.snapshot8k(self.LIVE_WINDOW_S)   # 8k 数据，最近 10 秒
+        except Exception:
+            return None
+        if buf is None or len(buf) < int(3 * 8000):
+            return None
+        seg = np.asarray(buf, dtype=np.float32)
+        # 音调候选：解码器锁定值 + 本地估计值，取"音调性"最高的那个
+        # （解码器可能还没锁定，或锁在旧频率上）
+        cands = []
+        dec = getattr(self, "stream_dec", None)
+        f_dec = getattr(dec, "f0", None) if dec is not None else None
+        f_est = None
+        try:
+            f_est = dsp.estimate_tone(seg)
+        except Exception:
+            f_est = None
+        for f in (f_dec, f_est):
+            if f and f > 0 and all(abs(f - c) > 5 for c in cands):
+                cands.append(float(f))
+        if not cands:
+            return None
+        best, best_ton = None, -1e9
+        for f in cands:
+            try:
+                t = dsp.tonality(seg, f0=f)
+            except Exception:
+                t = -1e9
+            if t > best_ton:
+                best, best_ton = f, t
+        tone = best
+        try:
+            snr = dsp.estimate_snr(seg, tone)
+        except Exception:
+            snr = None
+        ton = best_ton
+        lvl = 20.0 * float(np.log10(np.sqrt(np.mean(seg ** 2)) + 1e-12))
+        return dict(level=lvl, snr=snr, tonality=ton, tone=tone)
+
+    def _smooth(self, key, value, dt):
+        """指数滑动平均：τ 越大越稳、越慢。"""
+        if value is None:
+            return None
+        alpha = 1.0 - float(np.exp(-max(1e-3, dt) / self.LIVE_TAU_S))
+        old = self._q_ema.get(key)
+        val = float(value) if old is None else old + alpha * (float(value) - old)
+        self._q_ema[key] = val
+        return val
+
+    def _set_live_light(self, key, text, state):
+        """带迟滞的灯：颜色必须连续确认 N 次才切换。"""
+        pending = self._q_pending.get(key)
+        if pending is None or pending[0] != state:
+            self._q_pending[key] = [state, 1]
+            if self._q_color.get(key) is None:
+                self._q_color[key] = state
+        else:
+            pending[1] += 1
+            if pending[1] >= self.LIVE_CONFIRM and self._q_color.get(key) != state:
+                self._q_color[key] = state
+        lb = self.q_labels[key]
+        lb.configure(text=text, foreground=self.Q_COLORS[self._q_color.get(key, "off")])
+
+    def _update_live_quality(self):
+        """实时三灯（信号 / 电平 / SNR），每 1 秒刷新；异常写日志。"""
+        try:
+            self._update_live_quality_impl()
+        except Exception:
+            import traceback
+            _ui_err_log("[live_quality]\n" + traceback.format_exc())
+
+    def _update_live_quality_impl(self):
+        # 实时模式也要把灯区挂上（否则"先开监听、没解过文件"时灯区不出现）
+        if not self.quality_frame.winfo_manager():
+            self.quality_frame.pack(side="left", padx=(0, 10), before=self.lbl_suspect)
+        self.q_labels["decode"].configure(text="")      # 实时不显示解码灯
+        self.q_labels["ratio"].configure(text="")       # 实时不显示时序灯
+        for k in ("_q_ema", "_q_color", "_q_pending", "_q_last_ts"):
+            if not hasattr(self, k):
+                setattr(self, k, {} if k != "_q_last_ts" else 0.0)
+        now = time.time()
+        dt = max(0.2, now - (self._q_last_ts or now))
+        self._q_last_ts = now
+
+        met = self._live_metrics()
+
+        # 另外用最近 2 秒判断"现在有没有信号"（10 秒窗口衰减太慢）
+        quick = None
+        try:
+            buf = self.capture.snapshot8k(2.0)                   # 8k 数据，最近 2 秒
+            if buf is not None and len(buf) >= int(1.5 * 8000):
+                seg2 = np.asarray(buf, dtype=np.float32)
+                f2 = dsp.estimate_tone(seg2) if np.max(np.abs(seg2)) > 1e-4 else None
+                lv2 = 20.0 * float(np.log10(np.sqrt(np.mean(seg2 ** 2)) + 1e-12))
+                ton2 = dsp.tonality(seg2, f0=f2) if f2 else 0.0
+                quick = dict(level=lv2, tonality=ton2)
+        except Exception:
+            quick = None
+        # 无信号：全灰，且清空平滑状态（避免沿用旧值）
+        chk = quick or met
+        silent = (met is None) or (chk is None) or (chk["level"] < -60.0) or (chk["tonality"] < 15.0)
+        if silent:
+            self._q_silent_n = getattr(self, "_q_silent_n", 0) + 1
+            # 信号立即熄灭（相当于静噪关闭）；电平/SNR 连续 3 秒无信号后再熄灭，
+            # 避免正常发报的间隙（词间隔）导致闪烁
+            self._q_color["signal"] = "off"
+            self._q_pending["signal"] = None
+            self.q_labels["signal"].configure(text="● " + self.t("q_signal") + " " + self.t("q_none"),
+                                             foreground=self.Q_COLORS["off"])
+            self.lbl_hold.pack_forget()
+            self._live_snapshot = dict(level=self._q_ema.get("level"),
+                                       snr=self._q_ema.get("snr"),
+                                       signal="无", ts=time.time(), state="nosig")
+            # 电平 / SNR 冻结保留（不清空），方便发报结束后回头看
+            self.q_labels["decode"].configure(text="")
+            return
+        self._q_silent_n = 0
+
+        lvl = self._smooth("level", met["level"], dt)
+        snr = self._smooth("snr", met["snr"], dt) if met["snr"] is not None else None
+
+        # 信号灯：有信号（绿）/ 弱（黄）
+        sig_state = "good" if (lvl is not None and lvl > -50) else "warn"
+        self._set_live_light("signal", "● " + self.t("q_signal") + " " + self.t("q_yes"), sig_state)
+        self._live_snapshot = dict(level=lvl, snr=snr, signal="有",
+                                   ts=time.time(), state="live")
+
+        # 电灯塔
+        if lvl is not None:
+            st = "good" if lvl >= -28 else ("warn" if lvl >= -33 else "bad")
+            self._set_live_light("level", f"● {self.t('q_level')} {lvl:.0f}dB", st)
+
+        # SNR 灯
+        if snr is not None:
+            st = "good" if snr >= 18 else ("warn" if snr >= 12 else "bad")
+            self._set_live_light("snr", f"● {self.t('q_snr')} {snr:.0f}dB", st)
+        else:
+            self._q_color["snr"] = "off"
+            self.q_labels["snr"].configure(text=f"● {self.t('q_snr')} —",
+                                               foreground=self.Q_COLORS["off"])
+
+        # 实时模式不显示"解码"灯（文本还在增长，容易误导）
+        self.q_labels["decode"].configure(text="")
+
+    # ---------- 信号质量指示灯 ----------
+    Q_COLORS = {"good": "#1b8a3a", "warn": "#b07d00", "bad": "#c0392b", "off": "#8a9aab"}
+
+    def _quality_levels(self, res):
+        """把各项指标换算成 绿/黄/红 三档（阈值由 71 个样本校准得出）。"""
+        lvl = res.get("level_dbfs")
+        snr = res.get("snr_db")
+        tr = res.get("timing_ratio")
+        reg = res.get("regularity")
+
+        if isinstance(lvl, (int, float)):
+            lv = "good" if lvl >= -28 else ("warn" if lvl >= -33 else "bad")
+        else:
+            lv = "off"
+        if isinstance(snr, (int, float)):
+            sv = "good" if snr >= 18 else ("warn" if snr >= 12 else "bad")
+        else:
+            sv = "off"
+        # 时序比：真实录音在 10–40 WPM 都稳定在 ~1.0（ARRL 实测 1.02–1.04），
+        # 所以用绝对区间判定；不做速度归一化（合成素材的偏差不代表真实信号）
+        if isinstance(tr, (int, float)):
+            if tr > 1.55 or tr < 0.62:
+                tv = "bad"
+            elif 0.80 <= tr <= 1.35:
+                tv = "good"
+            else:
+                tv = "warn"
+        else:
+            tv = "off"
+
+        # 文本可信度（参考成熟做法：优先看"解不出来的字符"，而不是词形统计）
+        #   · ? 比例：解码器自己都判不出的码元 —— 最可靠的坏信号
+        #   · 非 ASCII：拉丁模式下出现西里尔字母 = 串码（俄文模式则不算）
+        #   · 单字词比例：只在"没有任何有效词"时才作为依据，
+        #     否则会把比赛风格（R R R K K 5NN TU）误判成乱码
+        try:
+            from .correct import PROWORDS as _PW, CALL_RE as _CALL
+        except Exception:
+            _PW, _CALL = set(), None
+        txt = (res.get("text") or "").strip()
+        toks = [w for w in txt.split() if w]
+        if len(toks) >= 4:
+            single = sum(1 for w in toks if len(w) == 1) / len(toks)
+            qrate = txt.count("?") / max(1, len(txt.replace(" ", "")))
+            nonascii = sum(1 for ch in txt if ord(ch) > 127) / max(1, len(txt))
+            valid = sum(1 for w in toks
+                        if (len(w) >= 2 and (w in _PW or (_CALL is not None and _CALL.match(w))))
+                        or w in ("K", "R")) / len(toks)
+            cyr = (res.get("alphabet") == "ru")
+            if cyr:
+                nonascii = 0.0
+            # 没有任何"有效词"（呼号/常用词/K/R）且单字占多数 → 基本是乱码
+            if qrate > 0.12 or nonascii > 0.05 or (valid < 0.20 and single > 0.30):
+                cv = "bad"
+            elif qrate > 0.03 or nonascii > 0.01 or (valid < 0.4 and single > 0.35):
+                cv = "warn"
+            else:
+                cv = "good"
+        else:
+            cv = "off"
+        if isinstance(reg, (int, float)):
+            rv = "good" if reg >= 0.85 else ("warn" if reg >= 0.35 else "bad")
+        else:
+            rv = "off"
+        # "解码"灯：把文本可信度与规律性合起来看（相当于"已锁定 / 未锁定"状态）
+        order = {"bad": 2, "warn": 1, "good": 0, "off": 0}
+        dv = "bad" if "bad" in (cv, rv) else ("warn" if "warn" in (cv, rv) else "good")
+        return {"level": (lv, lvl), "snr": (sv, snr), "decode": (dv, None),
+                "ratio": (tv, tr), "reg": (rv, reg), "text": (cv, None)}
+
+    def _update_quality(self, res):
+        """文件模式指示灯：电平 / SNR / 时序 / 解码（信号槽清空）。"""
+        try:
+            self.q_labels["signal"].configure(text="")      # 文件模式不显示"信号"槽
+            vals = self._quality_levels(res)
+            labels = {
+                "level": (self.t("q_level"), "dB"),
+                "snr": (self.t("q_snr"), "dB"),
+                "ratio": (self.t("q_ratio"), ""),
+                "decode": (self.t("q_decode"), ""),
+            }
+            for key in ("level", "snr", "ratio", "decode"):   # 文件模式四项
+                state, value = vals[key]
+                name, unit = labels[key]
+                lb = self.q_labels[key]
+                if key == "decode":
+                    word = {"good": self.t("q_good"), "warn": self.t("q_suspect"), "bad": self.t("q_bad")}.get(state, "—")
+                    lb.configure(text=f"● {name} {word}", foreground=self.Q_COLORS[state])
+                    continue
+                if value is None:
+                    lb.configure(text=f"● {name} —",
+                                 foreground=self.Q_COLORS["off"])
+                    continue
+                if key in ("level", "snr"):
+                    txt = f"● {name} {value:.0f}{unit}"
+                else:                                   # 时序：两位小数
+                    txt = f"● {name} {value:.2f}"
+                lb.configure(text=txt, foreground=self.Q_COLORS[state])
+            if not self.quality_frame.winfo_manager():
+                self.quality_frame.pack(side="left", padx=(0, 10), before=self.lbl_suspect)
+        except Exception:
+            import traceback
+            _ui_err_log("[_update_quality]\n" + traceback.format_exc())
+
+    def _clear_live_state(self):
+        """停止监听 / 复位：清空实时平滑状态与三灯（并把灯区收起）。"""
+        self._q_silent_n = 0
+        self._q_ema = {}
+        self._q_color = {}
+        self._q_pending = {}
+        self._q_last_ts = 0.0
+        self._q_ui_ts = 0.0
+        for key in ("signal", "level", "snr", "ratio", "decode"):
+            lb = self.q_labels.get(key)
+            if lb is not None:
+                lb.configure(text="")
+        try:
+            self.lbl_hold.pack_forget()
+        except Exception:
+            pass
+        self._live_snapshot = None
+        try:
+            self.quality_frame.pack_forget()      # 全部熄灭后收起，避免留空白
+        except Exception:
+            pass
+
+    def _clear_quality(self):
+        """清空结果时，把指示灯一并收起（避免显示上一次的残留）。"""
+        try:
+            for lb in getattr(self, "q_labels", {}).values():
+                lb.configure(text="")
+            hold = getattr(self, "lbl_hold", None)
+            if hold is not None:
+                hold.pack_forget()
+            self._live_snapshot = None
+            if hasattr(self, "quality_frame"):
+                self.quality_frame.pack_forget()
+            self._last_res = None
+        except Exception:
+            pass
+
+    def _popup_tip(self, lines):
+        """生成一个无边框提示窗，返回 Toplevel。"""
+        tip = tk.Toplevel(self)
+        tip.wm_overrideredirect(True)
+        tip.configure(background="#2b3440")
+        tk.Label(tip, text="\n".join(lines), justify="left", anchor="w",
+                 background="#2b3440", foreground="#e8eef6",
+                 font=("Microsoft YaHei", 9), padx=12, pady=10).pack()
+        tip.update_idletasks()
+        tw, th = tip.winfo_reqwidth(), tip.winfo_reqheight()
+        x = self.q_labels["level"].winfo_rootx()
+        y = self.q_labels["level"].winfo_rooty() - th - 6
+        sw, sh = tip.winfo_screenwidth(), tip.winfo_screenheight()
+        x = max(0, min(x, sw - tw - 4))
+        y = max(0, min(y, sh - th - 4))
+        tip.geometry(f"{tw}x{th}+{x}+{y}")
+        return tip
+
+    def _show_quality_tip(self, _evt=None):
+        """鼠标悬停：按"灯 → 明细"的顺序列出指标。"""
+        try:
+            if self._q_tip is not None:
+                return
+
+            # ---------- 实时模式 ----------
+            if getattr(self.capture, "running", False):
+                ema = getattr(self, "_q_ema", {}) or {}
+                lv = f"{ema['level']:.1f} dBFS" if "level" in ema else self.t("tip_no_data")
+                sn = f"{ema['snr']:.1f} dB" if "snr" in ema else self.t("tip_no_data")
+                sig = self.q_labels["signal"].cget("text").split()[-1] if self.q_labels["signal"].cget("text") else "—"
+                lines = [
+                    self.t("tip_live_title"),
+                    "",
+                    f"{self.t('q_signal'):<8}{sig}",
+                    "        " + self.t("tip_sig_rule"),
+                    "",
+                    f"{self.t('q_level'):<8}{lv}",
+                    "        " + self.t("tip_lvl_rule"),
+                    "",
+                    f"{self.t('q_snr'):<8}{sn}",
+                    "        " + self.t("tip_snr_rule"),
+                    "",
+                    self.t("tip_live_foot"),
+                ]
+                self._q_tip = self._popup_tip(lines)
+                return
+
+            # ---------- 已停止：用最后一帧实时数据 ----------
+            snap = getattr(self, "_live_snapshot", None)
+            if snap and snap.get("state") == "stopped" and not getattr(self, "_last_res", None):
+                ts = time.strftime("%H:%M:%S", time.localtime(snap.get("ts") or time.time()))
+                lv = f"{snap['level']:.1f} dBFS" if snap.get("level") is not None else "—"
+                sn = f"{snap['snr']:.1f} dB" if snap.get("snr") is not None else "—"
+                lines = [
+                    self.t("tip_stop_title").format(ts=ts),
+                    "",
+                    f"{self.t('q_signal'):<8}{self.t('q_stopped')}",
+                    "",
+                    f"{self.t('q_level'):<8}{lv}",
+                    "        " + self.t("tip_lvl_rule"),
+                    "",
+                    f"{self.t('q_snr'):<8}{sn}",
+                    "        " + self.t("tip_snr_rule"),
+                    "",
+                    self.t("tip_stop_foot"),
+                ]
+                self._q_tip = self._popup_tip(lines)
+                return
+
+            # ---------- 文件模式 ----------
+            cur = getattr(self, "_last_res", None)
+            if not cur:
+                return
+            v = self._quality_levels(cur)
+            def num(val, unit="", nd=2):
+                return "—" if val is None else f"{val:.{nd}f}{unit}"
+            body = (cur.get("text") or "").replace("\n", " ")
+            chars = [c for c in body if not c.isspace()]
+            q = (chars.count("?") / len(chars) * 100) if chars else 0.0
+            nonascii = (sum(1 for c in chars if ord(c) > 127) / len(chars) * 100) if chars else 0.0
+            words = [w for w in body.split() if w]
+            single = (sum(1 for w in words if len(w) == 1) / len(words) * 100) if words else 0.0
+            _word = {"good": self.t("q_good"),
+                     "warn": self.t("q_suspect"),
+                     "bad": self.t("q_bad")}.get(v["decode"][0], "—")
+            lines = [
+                self.t("tip_file_title"),
+                "",
+                f"{self.t('q_level'):<8}{num(v['level'][1], ' dBFS', 1)}",
+                "        " + self.t("tip_lvl_rule"),
+                "",
+                f"{self.t('q_snr'):<8}{num(v['snr'][1], ' dB', 1)}",
+                "        " + self.t("tip_snr_rule"),
+                "",
+                f"{self.t('q_ratio'):<8}{num(v['ratio'][1])}",
+                "        " + self.t("tip_ratio_rule"),
+                "",
+                f"{self.t('q_decode'):<8}{_word}",
+                "        " + self.t("tip_decode_rule"),
+                "",
+                f"{self.t('q_reg'):<8}{num(v['reg'][1])}    {self.t('tip_reg')}",
+                f"{self.t('q_text'):<8}" + self.t("tip_textline").format(q=q, single=single, nonascii=nonascii),
+            ]
+            self._q_tip = self._popup_tip(lines)
+        except Exception:
+            import traceback
+            _ui_err_log("[quality_tip]\n" + traceback.format_exc())
+            self._q_tip = None
+
+    def _hide_quality_tip(self, _evt=None):
+        try:
+            if self._q_tip is not None:
+                self._q_tip.destroy()
+        except Exception:
+            pass
+        self._q_tip = None
+
     def _snr_text(self, snr) -> str:
         """SNR 统一格式：数值 + 语言描述（高/良好/低/极低）。"""
         if snr is None:
@@ -2572,6 +2934,8 @@ class App(tk.Tk):
         sus = int(res.get("gate_suspects") or 0)
         snr = res.get("snr_db")
         snr_txt = self._snr_text(snr)
+        self._last_res = res
+        self._update_quality(res)
         self.status.configure(
             text=(f"{self.t('backend')}: {res.get('backend')} | {self.t('tone')}: {res.get('tone_hz')} Hz | "
                   f"{self.t('wpm')}: {wpm} | SNR: {snr_txt} | {self.t('dur')}: {res.get('duration_s')} s | "
@@ -2627,6 +2991,7 @@ class App(tk.Tk):
                 else:
                     self.txt.insert("end", ch)
             self.txt.configure(state="disabled")
+            self._update_empty_hint()      # 有内容了：隐藏空状态插图
             return
 
         # 文件模式：始终按"当前字母表"从 codes 重新渲染
@@ -2731,8 +3096,8 @@ class App(tk.Tk):
             return shown          # 俄文模式：文本本身就是西里尔，不再转换/纠错
         if self.fix_var.get() and shown:
             try:
-                from .correct import correct_text, repair_spacing
-                shown, _ = correct_text(shown)
+                # 2026-11-27：实时显示同样停用词替换，只做空格修复
+                from .correct import repair_spacing
                 shown, _ = repair_spacing(shown)
             except Exception:
                 pass
@@ -2743,14 +3108,6 @@ class App(tk.Tk):
             except Exception:
                 pass
         return shown
-
-    def _on_cyr_var(self):
-        self.show_cyr = bool(self.show_cyr_var.get())
-        self.alphabet = "ru" if self.show_cyr else "latin"
-        self.btn_cyr.configure(text=self.t("latin") if self.show_cyr else self.t("cyr"))
-        self._render()
-        if getattr(self, "_live_raw", ""):
-            self._set_text(self._live_shown(self._live_raw))
 
     def on_cyr(self):
         """在"拉丁 / 俄文"之间切换：不只是换显示，而是换整套字母表。"""
@@ -2798,6 +3155,7 @@ class App(tk.Tk):
             f.write(text)
 
     def on_clear(self):
+        self._clear_quality()
         self._set_text("")
         self.result = None
         self.selected_hz = None

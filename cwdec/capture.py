@@ -344,8 +344,9 @@ class CaptureEngine:
         return out[skip_out:]
 
     # ------------------------------------------------------------ buffer
-    def snapshot8k(self) -> np.ndarray:
-        y = self.snapshot()
+    def snapshot8k(self, tail_s: float | None = None) -> np.ndarray:
+        """取缓冲（可限定最近 N 秒），重采样到 8 kHz 后返回。"""
+        y = self.snapshot(tail_s)
         if y.size == 0 or self.rate == TARGET_SR:
             return y
         from scipy.signal import resample_poly
@@ -353,11 +354,27 @@ class CaptureEngine:
         g = gcd(int(self.rate), TARGET_SR)
         return resample_poly(y, TARGET_SR // g, int(self.rate) // g).astype(np.float32)
 
-    def snapshot(self) -> np.ndarray:
+    def snapshot(self, tail_s: float | None = None) -> np.ndarray:
+        """返回缓冲内容（8k，float32）。tail_s 给定时只返回最近 N 秒。
+
+        tail_s 用于"实时质量指示"这类只需要最近几秒的场景，
+        避免每次都把整段缓冲（最多 120 秒）拼接复制一遍。
+        """
         with self._lock:
             if not self._buf:
                 return np.zeros(0, dtype=np.float32)
-            return np.concatenate(self._buf).astype(np.float32)
+            if not tail_s:
+                return np.concatenate(self._buf).astype(np.float32)
+            need = int(float(tail_s) * (self.rate or TARGET_SR))   # 缓冲保留设备原始采样率
+            blocks = []
+            total = 0
+            for b in reversed(self._buf):
+                blocks.append(b)
+                total += len(b)
+                if total >= need:
+                    break
+            arr = np.concatenate(list(reversed(blocks))) if len(blocks) > 1 else blocks[0]
+            return arr[-need:].astype(np.float32)
 
     def clear(self):
         with self._lock:

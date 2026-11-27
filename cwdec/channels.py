@@ -6,8 +6,9 @@
 
 Finds persistent tones in the current audio (not just "the loudest peak"), tracks
 them across time with hysteresis, and retires them when they disappear.  This is
-the same principle used by CW Skimmer / SDRangel: per-frequency detection plus
-track association, rather than one global peak pick.
+per-frequency detection plus track association, rather than one global peak
+pick: this keeps short calls and weak signals from being shadowed by a strong
+neighbour.
 
 Two-stage confirmation keeps the list stable and cheap:
   · a detection must be seen twice before it becomes a *tentative* channel;

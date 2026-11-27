@@ -174,8 +174,8 @@ class WindowDecoder:
 
         if self.fix_text:
             try:
+                # 2026-11-27：只做空格修复（词替换在文件模式已证明有害）
                 from . import correct
-                new_text, _ = correct.correct_text(new_text, enabled=True)
                 new_text, _ = correct.repair_spacing(new_text)
             except Exception:
                 pass
