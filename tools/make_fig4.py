@@ -1,7 +1,10 @@
-"""fig4：系统框图（纵向单栏，手排）。
+"""fig4 备选版（matplotlib 手排）。
 
-尺寸 3.5 x 7.4 in @ 300 dpi，纯黑白，用于论文单栏。
+注意：仓库里实际使用的 fig4 是 docs/images/fig4_system.png（Mermaid 渲染），
+README / technical.md 里放的是 Mermaid 代码块。
+本脚本保留，作为"手排布局"的参考实现，不再生成正式图。
 """
+
 import os
 
 import matplotlib
