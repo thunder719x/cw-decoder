@@ -274,6 +274,44 @@ Windows 也可以直接双击 `run.bat`：它会依次尝试 `python\python.exe`
 
 ## 技术细节
 
+### 系统架构
+
+```mermaid
+flowchart LR
+  A["WAV file"] --> R["Resample<br/>8 kHz mono"]
+  B["Live audio<br/>loopback / mic"] --> R
+
+  subgraph DSP["DSP chain"]
+    direction LR
+    D1["Band-pass<br/>180 Hz"] --> D2["Envelope"]
+    D2 --> D3["Percentile<br/>threshold"]
+    D3 --> D4["Mark / space<br/>runs"]
+    D4 --> D5["Unit duration<br/>median + inertia"]
+    D5 --> D6["Gap<br/>clustering"]
+    D6 --> D7["Morse<br/>lookup"]
+  end
+
+  subgraph CTC["CTC chain"]
+    direction LR
+    C1["Frame<br/>spectrum"] --> C2["Acoustic model<br/>(ONNX)"]
+    C2 --> C3["CTC<br/>decode"]
+  end
+
+  R --> D1
+  R --> C1
+  D7 --> S{"Selector<br/>agreement + SNR"}
+  C3 --> S
+  S --> P["Spacing repair<br/>(no word substitution)"]
+  P --> T["Text output"]
+  S --> Q["Quality indicator<br/>level / SNR / timing"]
+  T --> U["GUI<br/>spectrogram + lights"]
+  Q --> U
+```
+
+> 不在 GitHub 上浏览时，可看静态图：[docs/images/fig4_system.png](docs/images/fig4_system.png)
+
+### 文档
+
 ```
 docs/technical.md     算法、参数、公式、测试方法与实测数据
 docs/packaging.md     如何打包成 exe、如何发布

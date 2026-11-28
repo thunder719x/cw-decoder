@@ -40,6 +40,40 @@
                                                     GUI（Tk）+ 瀑布 + 播放
 ```
 
+**系统框图**（GitHub 可直接渲染；离线可看 `images/fig4_system.png`）
+
+```mermaid
+flowchart LR
+  A["WAV file"] --> R["Resample<br/>8 kHz mono"]
+  B["Live audio<br/>loopback / mic"] --> R
+
+  subgraph DSP["DSP chain"]
+    direction LR
+    D1["Band-pass<br/>180 Hz"] --> D2["Envelope"]
+    D2 --> D3["Percentile<br/>threshold"]
+    D3 --> D4["Mark / space<br/>runs"]
+    D4 --> D5["Unit duration<br/>median + inertia"]
+    D5 --> D6["Gap<br/>clustering"]
+    D6 --> D7["Morse<br/>lookup"]
+  end
+
+  subgraph CTC["CTC chain"]
+    direction LR
+    C1["Frame<br/>spectrum"] --> C2["Acoustic model<br/>(ONNX)"]
+    C2 --> C3["CTC<br/>decode"]
+  end
+
+  R --> D1
+  R --> C1
+  D7 --> S{"Selector<br/>agreement + SNR"}
+  C3 --> S
+  S --> P["Spacing repair<br/>(no word substitution)"]
+  P --> T["Text output"]
+  S --> Q["Quality indicator<br/>level / SNR / timing"]
+  T --> U["GUI<br/>spectrogram + lights"]
+  Q --> U
+```
+
 **模块职责**
 
 | 模块 | 作用 |
