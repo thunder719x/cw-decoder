@@ -6,4 +6,4 @@
 
 M1 scope: WAV input + DSP backend + simple Tk GUI, multilingual UI (zh / en / ru).
 """
-__version__ = "0.1.2"
+__version__ = "0.1.3"

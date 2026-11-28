@@ -117,6 +117,32 @@ def main():
     if "--selftest" in sys.argv:
         return _selftest()
 
+    # 隐藏诊断：把界面关键尺寸写成 JSON 后退出（用于打包后核对布局）
+    if "--uidump" in sys.argv:
+        import json
+        import time as _t
+        from cwdec.gui import App as _App
+        app = _App()
+        for _ in range(40):
+            app.update()
+            _t.sleep(0.04)
+        from cwdec import __version__ as _ver
+        data = {
+            "version": _ver,
+            "window": [app.winfo_width(), app.winfo_height()],
+            "canvas": [app.canvas.winfo_width(), app.canvas.winfo_height()],
+            "text": [app.txt.winfo_width(), app.txt.winfo_height()],
+            "slider": [app.vs.winfo_width(), app.vs.winfo_height()],
+            "slider_enabled": bool(app.vs.enabled),
+            "view": [app.view["f0"], app.view["f1"]],
+            "wf_mode": bool(getattr(app, "_wf_mode", False)),
+        }
+        out = sys.argv[sys.argv.index("--uidump") + 1] if len(sys.argv) > sys.argv.index("--uidump") + 1 else "uidump.json"
+        with open(out, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        app._on_close()
+        return 0
+
     hwnd = _existing_window()
     if hwnd:
         user32 = ctypes.windll.user32

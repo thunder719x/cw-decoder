@@ -1,0 +1,9 @@
+sample_cq.wav / dsp: 'CQ CQ DE BD6LBA K' [0.11s]
+sample_cq.wav / ctc: 'CQ CQ DE BD6LBA K' [0.49s]
+sample_noisy.wav / dsp: 'CQ CQ DE BD6LBA K' [0.08s]
+sample_noisy.wav / ctc: 'CQ CQ DE BD6LBA K' [0.17s]
+ui_langs=zh,en,ru
+ui_zh_title=CW 解码器
+ui_en_title=CW Decoder
+ui_ru_title=CW декодер
+python=3.12.15 frozen=False

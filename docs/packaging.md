@@ -64,13 +64,28 @@ pyinstaller ^
 
 **产物**：`dist/cw-decoder/`（整个文件夹压成 zip 即为 Release 附件）
 
-**实测体积**（v0.1.2，Python 3.12 / PyInstaller 6.22）
+**实测体积**（v0.1.3，Python 3.12 / PyInstaller 6.22.3）
 
 ```
-解压后：1160 个文件，191 MB（v0.1.2 实测）
-zip：   78.1 MB（SHA256 见 Release 说明）
+解压后：1160 个文件，191 MB（v0.1.3 实测）
+zip：   78.2 MB（SHA256 见 Release 说明）
 启动：  1.5 秒（首次 2.2 秒）
-内存：  约 125 MB
+内存：  约 131 MB
+```
+
+**布局自检（v0.1.3 新增）**
+
+```bash
+cw-decoder.exe --uidump dump.json
+```
+
+写出窗口/画布/文本框的实测尺寸，用于确认"频谱与文本框等高"在打包后仍然成立：
+
+```json
+{"version": "0.1.3", "window": [1536, 773],
+ "canvas": [1494, 251], "text": [1512, 251],
+ "slider": [18, 215], "slider_enabled": false,
+ "view": [200.0, 1600.0], "wf_mode": false}
 ```
 
 ---
@@ -115,10 +130,10 @@ python=3.12.15 frozen=True
 ## 5. 发布（GitHub Releases）
 
 ```
-1. 打 tag：git tag v0.1.2 && git push origin v0.1.2
+1. 打 tag：git tag v0.1.3 && git push origin v0.1.3
 2. GitHub → Releases → Draft a new release
-3. 选择 tag，标题 v0.1.2，粘贴 CHANGELOG 对应段落
-4. 上传 zip（cw-decoder-v0.1.2-win64.zip）
+3. 选择 tag，标题 v0.1.3，粘贴 CHANGELOG 对应段落
+4. 上传 zip（cw-decoder-v0.1.3-win64.zip）
 5. 发布
 ```
 

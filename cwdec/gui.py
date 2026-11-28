@@ -695,7 +695,7 @@ class App(tk.Tk):
 
         # ---- 频谱 ----
         spec_frame = ttk.Frame(self, padding=(12, 4, 12, 2))
-        spec_frame.pack(fill="both", expand=True)
+        spec_frame.pack(fill="x")
         head = ttk.Frame(spec_frame)
         head.pack(fill="x")
         self.btn_reset = ttk.Button(head, text=self.t("reset"), width=6, command=self.reset_view)
@@ -708,14 +708,18 @@ class App(tk.Tk):
         self.lbl_hz = ttk.Label(head, text=self.t("hz"))
         self.lbl_hz.pack(side="right", padx=(0, 4))
         row = tk.Frame(spec_frame, background="#0f1216")
-        row.pack(fill="both", expand=True, pady=(4, 0))
+        row.pack(fill="x", pady=(4, 0))
         self.vs = VerticalSlider(row, width=18, minimum=50, maximum=3500,
                                  command=self.on_vscroll)
         self.vs.place(x=0, y=MARGIN_T, width=18, height=200)
         self._sync_guard = False
-        self.canvas = tk.Canvas(row, height=238, background="#0f1216",
+        # 频谱容器：高度由 _balance_split() 自动配平到与文本框等高
+        holder = tk.Frame(row, height=260, background="#0f1216")
+        holder.pack(side="left", fill="x", expand=True, anchor="n", padx=(18, 0))
+        holder.pack_propagate(False)
+        self.canvas = tk.Canvas(holder, background="#0f1216",
                                 highlightthickness=0, borderwidth=0)
-        self.canvas.pack(side="left", fill="both", expand=True, anchor="n", padx=(18, 0))
+        self.canvas.pack(fill="both", expand=True)
         self.canvas.bind("<Button-1>", self.on_canvas_click)
         self.canvas.bind("<Configure>", self._on_canvas_configure)
         self.canvas.bind("<MouseWheel>", self.on_wheel)
@@ -799,6 +803,15 @@ class App(tk.Tk):
         self.txt.pack(fill="both", expand=True)
         self.txt.tag_configure("sus", foreground="#ff5252")
 
+        # 频谱与文本框等高：窗口变化或加载文件后自动配平
+        self._balance_job = None
+        self._balancing = False
+        self._spec_holder = holder
+        self.bind("<Configure>", self._schedule_balance, add="+")
+        # 载入文件后"候选频道"面板出现，也会改变可用高度 → 同样触发配平
+        spec_frame.bind("<Configure>", self._schedule_balance, add="+")
+        mid.bind("<Configure>", self._schedule_balance, add="+")
+
         # 停止监听后的说明条（在文本框下沿，不写入正文）
         self.lbl_stop_hint = tk.Label(mid,
                                       text=self.t("stop_hint"),
@@ -863,7 +876,9 @@ class App(tk.Tk):
 
 
     def _on_close(self):
-        for job in ("_wf_job", "_live_job", "_tick_job"):
+        # 关闭前取消所有排程的 after 任务，避免销毁后回调报 "invalid command name"
+        for job in ("_wf_job", "_live_job", "_tick_job",
+                    "_balance_job", "_empty_img_job", "_busy_job"):
             j = getattr(self, job, None)
             if j:
                 try:
@@ -880,6 +895,41 @@ class App(tk.Tk):
         except Exception:
             pass
         self.destroy()
+
+    def _schedule_balance(self, _evt=None):
+        """窗口/面板变化后，延迟配平一次（避免拖动时反复计算）。"""
+        if getattr(self, "_balancing", False):
+            return
+        if self._balance_job is not None:
+            try:
+                self.after_cancel(self._balance_job)
+            except Exception:
+                pass
+        self._balance_job = self.after(80, self._balance_split)
+
+    def _balance_split(self):
+        """让频谱画布与文本框高度尽量相等（误差 4 px 内）。"""
+        self._balance_job = None
+        if getattr(self, "_balancing", False):
+            return
+        self._balancing = True
+        try:
+            for _ in range(4):
+                self.update_idletasks()
+                ch = self.canvas.winfo_height()
+                th = self.txt.winfo_height()
+                if ch <= 1 or th <= 1:
+                    break
+                diff = ch - th
+                if abs(diff) <= 4:
+                    break
+                h = self._spec_holder.winfo_height() - diff / 2
+                h = max(120, min(900, h))
+                self._spec_holder.configure(height=h)
+        except Exception:
+            pass
+        finally:
+            self._balancing = False
 
     def _on_canvas_configure(self, _evt=None):
         # 竖向滑块的高度跟随画布（窗口变大时一起变长）
@@ -913,6 +963,13 @@ class App(tk.Tk):
             return
         self._wf_mode = True
         self._wf_frozen = False
+        # 实时模式视图固定为全频段，滑块置灰（避免"能拖但无效"的假按钮）
+        self.view["f0"], self.view["f1"] = F_MIN, F_MAX
+        try:
+            self.vs.set((F_MIN + F_MAX) / 2.0)
+            self.vs.set_enabled(False)
+        except Exception:
+            pass
         x0, y0 = MARGIN_L, MARGIN_T
         cw = max(200, self.canvas.winfo_width())
         ch = max(120, self.canvas.winfo_height())
@@ -1002,6 +1059,10 @@ class App(tk.Tk):
         self._wf_frozen = False
         self._wf = None
         self._wf_item = None
+        try:
+            self.vs.set_enabled(True)
+        except Exception:
+            pass
         self.canvas.delete("all")
         self._plot = None
         self.lbl_src.configure(text=f"{self.t('src')}: {self.t('none')}")
@@ -1763,7 +1824,10 @@ class App(tk.Tk):
         if self._y8k is None or not self._plot:
             return
         # 时间轴的 x 原点是"频谱画布的偏移 + 左边距"，不是 _plot[0]
-        offset = self.canvas.winfo_x() if self.canvas.winfo_ismapped() else 18
+        try:
+            offset = self.canvas.winfo_rootx() - self.timeline.winfo_rootx()
+        except Exception:
+            offset = 18
         tl = offset + MARGIN_L
         twidth = max(1, self._plot[2])
         frac = (evt.x - tl) / twidth
@@ -1806,8 +1870,11 @@ class App(tk.Tk):
             self.canvas.create_line(xv, y0, xv, y0 + ph, fill="#ffe066", width=2, tags="play")
 
         self.timeline.delete("all")
-        # 与频谱画布的绘图区严格对齐（左侧有滑块，所以要加上画布的 x 偏移）
-        offset = self.canvas.winfo_x() if self.canvas.winfo_ismapped() else 18
+        # 与频谱画布的绘图区严格对齐：用屏幕坐标差，避免画布嵌套后 winfo_x 恒为 0
+        try:
+            offset = self.canvas.winfo_rootx() - self.timeline.winfo_rootx()
+        except Exception:
+            offset = 18
         tl = offset + MARGIN_L
         twidth = max(50, pw)
         t0, t1 = self.view["t0"], self.view["t1"]
@@ -1848,7 +1915,11 @@ class App(tk.Tk):
             if not self._plot:
                 return
             y0, ph = self._plot[1], self._plot[3]
-            self.vs.place_configure(x=0, y=self.canvas.winfo_y() + y0,
+            try:
+                dy = self.canvas.winfo_rooty() - self.vs.master.winfo_rooty()
+            except Exception:
+                dy = 0
+            self.vs.place_configure(x=0, y=dy + y0,
                                     width=18, height=max(40, ph))
         except Exception:
             pass
@@ -1877,6 +1948,9 @@ class App(tk.Tk):
 
     def on_vscroll(self, value):
         """Vertical slider = pan the frequency window (span stays the same)."""
+        # 实时模式：视图固定，滑块不生效（由 _wf_start 置灰）
+        if getattr(self, "_wf_mode", False):
+            return
         if self._sync_guard or self._spec is None:
             return
         span = self.view["f1"] - self.view["f0"]
@@ -1952,7 +2026,10 @@ class App(tk.Tk):
     def on_wheel(self, evt):
         if not self._plot:
             return
-        if self._spec is None and not getattr(self, "_wf_mode", False):
+        # 实时模式：视图固定，滚轮不做任何缩放（调谐请用输入框或多频道列表）
+        if getattr(self, "_wf_mode", False):
+            return
+        if self._spec is None:
             return
         steps = 1 if evt.delta > 0 else -1
         factor = 0.8 ** steps
@@ -2164,6 +2241,41 @@ class App(tk.Tk):
         if self.path:
             self.on_decode()
 
+    def _start_live_decoder(self, tone: float):
+        """按指定音调创建实时解码器（首次自动锁定之前也能用）。"""
+        self.selected_hz = float(tone)
+        dec = WindowDecoder(
+            f0=self.selected_hz,
+            on_update=lambda b, a: self._live_q.put((b, a)),
+            on_tone=lambda f: self.after(0, lambda: self.status.configure(
+                text=f"{self.t('tone')}: {f:.1f} Hz")),
+            src_rate=self.capture.rate or 48000,
+            backend=self._live_backend(), fix_text=False,
+            alphabet=getattr(self, "alphabet", "latin"))
+        self.stream_dec = dec
+        dec.start()
+        try:
+            for b in getattr(self, "_live_pending", []):
+                dec.feed(b)
+            self._live_pending = []
+        except Exception:
+            import traceback
+            _ui_err_log("[_start_live_decoder]\n" + traceback.format_exc())
+        self._live_tone_done = True
+        return dec
+
+    def _apply_live_tone(self, tone: float):
+        """实时中切换音调：没有解码器就建一个，有就只改音调。"""
+        if self.stream_dec is None:
+            self._start_live_decoder(tone)
+        else:
+            try:
+                self.stream_dec.set_tone(float(tone))
+            except Exception:
+                import traceback
+                _ui_err_log("[_apply_live_tone]\n" + traceback.format_exc())
+        self.lbl_suspect.configure(text="")
+
     def on_manual_freq(self, _evt=None):
         try:
             hz = float(self.ent_hz.get().strip())
@@ -2175,10 +2287,10 @@ class App(tk.Tk):
         self.selected_hz = min(F_MAX, max(F_MIN, hz))
         self._tone_manual = True
         self._draw_marker()
+        self._draw_band()
         self._refresh_play_audio()
         if self.capture.running:
-            if self.stream_dec is not None:
-                self.stream_dec.set_tone(self.selected_hz)
+            self._apply_live_tone(self.selected_hz)
             return
         if self.path:
             self.on_decode()
