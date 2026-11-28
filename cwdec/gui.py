@@ -21,6 +21,7 @@ import time
 import queue
 import threading
 import tkinter as tk
+import types
 from tkinter import filedialog, messagebox, ttk
 
 import numpy as np
@@ -729,6 +730,7 @@ class App(tk.Tk):
                                   highlightthickness=0)
         self.timeline.pack(fill="x")
         self.timeline.bind("<Button-1>", self.on_timeline_click)
+        self.timeline.bind("<MouseWheel>", self._wheel_time_zoom, add="+")
 
         play_bar = ttk.Frame(spec_frame)
         play_bar.pack(fill="x", pady=(4, 0))
@@ -824,12 +826,16 @@ class App(tk.Tk):
         self._empty_img_cache = {}
         self._empty_img_job = None
         self.txt.bind("<Configure>", self._on_txt_resize, add="+")
+        self.txt.bind("<MouseWheel>", self._wheel_time_zoom, add="+")
 
         # 空状态提示（浮在文本框中央，不写入正文，避免污染内容）
         self.lbl_empty = tk.Label(self.txt, text=self.t("empty_file"),
                                   background="#fbfcfe", foreground="#94a3b3",
                                   font=("Segoe UI", 10))
         self.lbl_empty.place(relx=0.5, rely=0.45, anchor="center")
+        # 空状态标签覆盖在文本框上，会吞掉滚轮事件 → 同样转发
+        for _w in (self.lbl_empty, self.lbl_empty_img):
+            _w.bind("<MouseWheel>", self._wheel_time_zoom, add="+")
 
         bar = tk.Frame(self, relief="groove", borderwidth=1, background="#f0f0f0")
         bar.pack(side="bottom", fill="x")
@@ -2023,6 +2029,18 @@ class App(tk.Tk):
             self.canvas.delete(tag)
         self.status.configure(text=self.t("hint"))
 
+    def _wheel_time_zoom(self, evt):
+        """在文本框/时间轴上按住 Shift 或 Ctrl 滚轮时，转交给画布做时间轴缩放。"""
+        if not (evt.state & 0x0001 or evt.state & 0x0004):
+            return None          # 不按修饰键：保持默认行为（文本滚动等）
+        try:
+            x = evt.x_root - self.canvas.winfo_rootx()
+            y = evt.y_root - self.canvas.winfo_rooty()
+        except Exception:
+            return None
+        self.on_wheel(types.SimpleNamespace(delta=evt.delta, x=x, y=y, state=evt.state))
+        return "break"
+
     def on_wheel(self, evt):
         if not self._plot:
             return
@@ -2411,6 +2429,12 @@ class App(tk.Tk):
         path = filedialog.askopenfilename(
             title=self.t("open"),
             filetypes=[("WAV audio", "*.wav"), ("All files", "*.*")])
+        if not path:
+            return
+        self.open_path(path)
+
+    def open_path(self, path: str):
+        """打开指定 WAV（不弹对话框），供自检与后续拖放/命令行复用。"""
         if not path:
             return
         if self.capture.running:

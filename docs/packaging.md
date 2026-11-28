@@ -81,6 +81,19 @@ cw-decoder.exe --uidump dump.json
 
 写出窗口/画布/文本框的实测尺寸，用于确认"频谱与文本框等高"在打包后仍然成立：
 
+**时间轴缩放自检（v0.1.3 新增）**
+
+```bash
+cw-decoder.exe --zoomcheck sample.wav dump.json
+```
+
+确认"Shift+滚轮缩放时间轴"在打包后仍然生效（会分别在文本框与画布上注入事件）：
+
+```json
+{"before": [0.0, 380.16], "after_label_wheel": [17.84, 321.97],
+ "after_canvas_wheel": [24.13, 267.43], "label_ok": true, "canvas_ok": true}
+```
+
 ```json
 {"version": "0.1.3", "window": [1536, 773],
  "canvas": [1494, 251], "text": [1512, 251],

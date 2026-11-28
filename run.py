@@ -117,6 +117,38 @@ def main():
     if "--selftest" in sys.argv:
         return _selftest()
 
+    # 隐藏诊断：验证"Shift+滚轮缩放时间轴"在打包后仍然生效
+    if "--zoomcheck" in sys.argv:
+        import json
+        import time as _t
+        from cwdec.gui import App as _App
+        idx = sys.argv.index("--zoomcheck")
+        wav = sys.argv[idx + 1] if len(sys.argv) > idx + 1 else ""
+        out = sys.argv[idx + 2] if len(sys.argv) > idx + 2 else "zoomcheck.json"
+        app = _App()
+        for _ in range(30):
+            app.update()
+            _t.sleep(0.04)
+        app.open_path(wav)
+        for _ in range(15):
+            app.update()
+            _t.sleep(0.04)
+        before = [round(app.view["t0"], 2), round(app.view["t1"], 2)]
+        # 走真实绑定：在"空状态标签"（覆盖在文本框上）发 Shift+滚轮
+        app.lbl_empty_img.event_generate("<MouseWheel>", delta=120, x=40, y=20, state=0x0001)
+        app.update()
+        mid = [round(app.view["t0"], 2), round(app.view["t1"], 2)]
+        app.canvas.event_generate("<MouseWheel>", delta=120, x=200, y=100, state=0x0001)
+        app.update()
+        after = [round(app.view["t0"], 2), round(app.view["t1"], 2)]
+        with open(out, "w", encoding="utf-8") as f:
+            json.dump({"before": before, "after_label_wheel": mid,
+                       "after_canvas_wheel": after,
+                       "label_ok": before != mid, "canvas_ok": mid != after},
+                      f, ensure_ascii=False, indent=2)
+        app._on_close()
+        return 0
+
     # 隐藏诊断：把界面关键尺寸写成 JSON 后退出（用于打包后核对布局）
     if "--uidump" in sys.argv:
         import json
